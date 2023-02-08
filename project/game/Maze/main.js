@@ -1,3 +1,5 @@
-import * as aClass from "../../../modules/grid.js";
+import { grid } from "../../../modules/grid.js";
 
-console.log(aClass);
+let test = new grid(3, 3);
+
+console.log(test);

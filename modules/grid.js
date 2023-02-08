@@ -1,18 +1,14 @@
-class testClass {
-  field;
-  #privateField;
-  constructor(in1) {
-    this.field = in1;
-    this.#privateField = this.field * 2;
-  }
+class defaultSquare {}
 
-  aMethod() {
-    console.log(this.field);
-  }
-
-  get privateField() {
-    return this.#privateField;
+class grid {
+  #flattenedArray = new Array();
+  dimensions = { w: 0, h: 0 };
+  constructor(width, height, gridObj) {
+    this.dimensions = { w: width, h: height };
+    this.#flattenedArray.length = width * height;
+    if (!gridObj) this.#flattenedArray.fill(new defaultSquare());
+    else this.#flattenedArray.fill(gridObj);
   }
 }
 
-export { testClass };
+export { grid };
