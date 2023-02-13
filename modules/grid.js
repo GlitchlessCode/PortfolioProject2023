@@ -3,6 +3,16 @@ class gridSquare {
   constructor(x, y) {
     this.position = { x, y };
   }
+  addToSet(inputSet) {
+    if (!(inputSet instanceof Set))
+      throw new TypeError("inputSet is not an Integer");
+    inputSet.add(this);
+  }
+  removeFromSet(inputSet) {
+    if (!(inputSet instanceof Set))
+      throw new TypeError("inputSet is not an Integer");
+    inputSet.delete(this);
+  }
 }
 
 function fillerFunction(e, index) {
@@ -72,6 +82,11 @@ class grid {
   createSet(name) {
     if (this.#sets[name]) return;
     this.#sets[name] = new Set();
+  }
+
+  getSet(name) {
+    if (this.#sets[name]) return;
+    return this.#sets[name];
   }
 
   removeSet(name) {
