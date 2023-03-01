@@ -5,12 +5,13 @@ class gridSquare {
   }
   addToSet(inputSet) {
     if (!(inputSet instanceof Set))
-      throw new TypeError("inputSet is not an Integer");
+      throw new TypeError("inputSet is not a Set");
     inputSet.add(this);
   }
   removeFromSet(inputSet) {
     if (!(inputSet instanceof Set))
-      throw new TypeError("inputSet is not an Integer");
+      throw new TypeError("inputSet is not a Set");
+    if (!inputSet.has(this)) return;
     inputSet.delete(this);
   }
 }
@@ -79,13 +80,41 @@ class grid {
     this.#flattenedArray[x + y * this.dimensions.w][key] = value;
   }
 
+  #removeColumn(index) {
+    if (index >= this.dimensions.w || this.dimensions.w < 0)
+      throw new RangeError("index is out of range");
+  }
+
+  #removeRow(index) {
+    if (index >= this.dimensions.h || this.dimensions.w < 0)
+      throw new RangeError("index is out of range");
+  }
+
+  #addColumn(index) {
+    if (index > this.dimensions.w || this.dimensions.w < 0)
+      throw new RangeError("index is out of range");
+  }
+
+  #addRow(index) {
+    if (index > this.dimensions.h || this.dimensions.w < 0)
+      throw new RangeError("index is out of range");
+  }
+
+  removeColumns() {}
+
+  removeRows() {}
+
+  addColumns() {}
+
+  addRows() {}
+
   createSet(name) {
     if (this.#sets[name]) return;
     this.#sets[name] = new Set();
   }
 
   getSet(name) {
-    if (this.#sets[name]) return;
+    if (!this.#sets[name]) return;
     return this.#sets[name];
   }
 

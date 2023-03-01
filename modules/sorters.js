@@ -39,6 +39,49 @@ function heapify(array, size, index) {
 
 // Exported
 
+// Turns out this exists already, though I came up with the idea by combining quick sort with binary separation
+function binaryQuickSort(array) {
+  for (let i = array.length / 2 - 1; i >= 0; i--) {
+    heapify(array, array.length, i);
+  }
+
+  let power = Math.floor(Math.log2(array[0]));
+
+  function recursiveBinarySort(arr, pow, a, b) {
+    let l = a;
+    let r = b;
+
+    let powOf2 = 2 ** pow;
+
+    while (l <= r) {
+      while (Math.floor(arr[l] / powOf2) % 2 === 0) {
+        // Move the left cursor to the right
+        l++;
+      }
+      while (Math.floor(arr[r] / powOf2) % 2 === 1) {
+        // Move the right cursor to the left
+        r--;
+      }
+
+      // if the left cursor is to the left of, or on the same index as the right cursor
+      if (l <= r) {
+        // Swap the values of the left cursor and the right cursor
+        swap(arr, l, r);
+        // Move the left crusor to the right, and the right cursor to the left
+        l++;
+        r--;
+      }
+    }
+    if (b - l > 1 && pow > -50) {
+      recursiveBinarySort(arr, pow - 1, l, b);
+    }
+    if (r - a > 1 && pow > -50) {
+      recursiveBinarySort(arr, pow - 1, a, r);
+    }
+  }
+  recursiveBinarySort(array, power, 0, array.length - 1);
+}
+
 // With help from https://www.programiz.com/dsa/heap-sort
 function heapSort(array) {
   // Build max heap (every parent is larger than both children)
@@ -90,4 +133,4 @@ function mergeSort(array) {
   return [...result, ...leftArray, ...rightArray];
 }
 
-export { mergeSort, heapSort };
+export { mergeSort, heapSort, binaryQuickSort };
