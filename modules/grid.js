@@ -1,3 +1,5 @@
+import { swap } from "./array-functions.js";
+
 class gridSquare {
   position = { x: 0, y: 0 };
   constructor(x, y) {
@@ -29,7 +31,11 @@ class grid {
   fillerObject;
   dimensions = { w: 0, h: 0 };
 
-  constructor(width = 1, height = 1, fillerObject = gridSquare) {
+  constructor(width, height, fillerObject) {
+    this.create(width, height, fillerObject);
+  }
+
+  create(width = 1, height = 1, fillerObject = gridSquare) {
     // Error catching
     if (!Number.isInteger(width))
       throw new TypeError("width is not an Integer");
@@ -69,44 +75,6 @@ class grid {
       throw new RangeError("y is out of range");
     return this.#flattenedArray[x + y * this.dimensions.w];
   }
-
-  setPos(x, y, key, value) {
-    if (!Number.isInteger(x)) throw new TypeError("x is not an Integer");
-    if (!Number.isInteger(y)) throw new TypeError("y is not an Integer");
-    if (x > this.dimensions.w - 1 || x < 0)
-      throw new RangeError("x is out of range");
-    if (y > this.dimensions.h - 1 || y < 0)
-      throw new RangeError("y is out of range");
-    this.#flattenedArray[x + y * this.dimensions.w][key] = value;
-  }
-
-  #removeColumn(index) {
-    if (index >= this.dimensions.w || this.dimensions.w < 0)
-      throw new RangeError("index is out of range");
-  }
-
-  #removeRow(index) {
-    if (index >= this.dimensions.h || this.dimensions.w < 0)
-      throw new RangeError("index is out of range");
-  }
-
-  #addColumn(index) {
-    if (index > this.dimensions.w || this.dimensions.w < 0)
-      throw new RangeError("index is out of range");
-  }
-
-  #addRow(index) {
-    if (index > this.dimensions.h || this.dimensions.w < 0)
-      throw new RangeError("index is out of range");
-  }
-
-  removeColumns() {}
-
-  removeRows() {}
-
-  addColumns() {}
-
-  addRows() {}
 
   createSet(name) {
     if (this.#sets[name]) return;

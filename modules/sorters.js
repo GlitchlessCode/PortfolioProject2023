@@ -1,11 +1,6 @@
-// Private Utilities
+import { swap } from "./array-functions.js";
 
-// Swap two values in an array in place
-function swap(array, a, b) {
-  let temp = array[a];
-  array[a] = array[b];
-  array[b] = temp;
-}
+// Private Utilities
 
 // With help from https://www.programiz.com/dsa/heap-sort
 function heapify(array, size, index) {

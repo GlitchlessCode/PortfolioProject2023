@@ -1,6 +1,6 @@
 import { grid } from "../../../modules/grid.js";
 
-let test = new grid(4, 5);
+let test = new grid(8, 6);
 
 // Temporary: Just for testing systems from console
 window.test = test;
