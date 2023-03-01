@@ -23,6 +23,16 @@ function fillerFunction(e, index) {
   );
 }
 
+/**
+ * @param {grid} grid
+ * @param {HTMLCanvasElement} cnv
+ * @param {CanvasRenderingContext2D} ctx
+ * @description Draws the specified grid to the canvas
+ * */
+function drawGrid(grid, cnv, ctx) {}
+
+drawGrid();
+
 class grid {
   #flattenedArray = new Array();
   #sets = new Object();
@@ -90,4 +100,4 @@ class grid {
   }
 }
 
-export { grid, gridSquare };
+export { grid, gridSquare, drawGrid };
