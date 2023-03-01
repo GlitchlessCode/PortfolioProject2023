@@ -1,5 +1,3 @@
-import { swap } from "./array-functions.js";
-
 class gridSquare {
   position = { x: 0, y: 0 };
   constructor(x, y) {
