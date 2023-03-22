@@ -12,7 +12,7 @@ h1 {
 }
 
 h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   margin: 0;
   margin-top: 10px;
@@ -88,8 +88,20 @@ button:disabled {
   align-items: center;
 }
 
-#errorMessage {
+h3.errorMessage {
   color: red;
+}
+
+input.errorMessage {
+  border-bottom: 1px solid red;
+}
+
+input.errorMessage:hover {
+  border-bottom: 1px solid red;
+}
+
+input.errorMessage:focus {
+  border-bottom: 1px solid red;
 }
 
 .container {
