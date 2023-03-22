@@ -22,9 +22,17 @@
           </p>
         </div>
         <div class="container">
+          <!-- LOADER provided by loading.io/css/ -->
+          <div class="lds-contain hide">
+            <div class="lds-rect">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <div class="animated" id="signInBox1">
             <h1>Sign in</h1>
-            <h3 id="errorMessage" hidden></h3>
+            <h3 id="errorMessage" class="hide"></h3>
             <input type="text" placeholder="Username" autofocus id="usrnmIn" />
             <p>No account? <span class="fakeLink">Create one!</span></p>
             <p>
@@ -35,9 +43,9 @@
             </div>
           </div>
 
-          <div class="animated" id="signInBox2" hidden>
+          <div class="animated hide" id="signInBox2">
             <h1>Enter Password</h1>
-            <h3 id="errorMessage" hidden></h3>
+            <h3 id="errorMessage" class="hide"></h3>
             <input type="text" placeholder="Password" id="pswrdIn" />
             <p><span class="fakeLink">Forgot your password?</span></p>
             <div id="buttons">
@@ -45,36 +53,27 @@
             </div>
           </div>
 
-          <div class="animated" id="signUpBox1" hidden>
+          <div class="animated hide" id="signUpBox1">
             <h1>Create Account</h1>
-            <h3 id="errorMessage" hidden></h3>
+            <h3 id="errorMessage" class="hide"></h3>
             <input type="text" placeholder="Username" id="usrnmUp" />
             <div id="buttons"><button>Back</button><button>Next</button></div>
           </div>
 
-          <div class="animated" id="signUpBox2" hidden>
+          <div class="animated hide" id="signUpBox2">
             <h1>Create a Password</h1>
-            <h3 id="errorMessage" hidden></h3>
+            <h3 id="errorMessage" class="hide"></h3>
             <input type="text" placeholder="Password" id="pswrdUp" /><br />
             <label for="showPswrd">Show Password?</label>
             <input type="checkbox" name="showPswrd" id="showPswrd" />
             <div id="buttons"><button>Back</button><button>Next</button></div>
           </div>
 
-          <div class="animated" id="signUpBox3" hidden>
+          <div class="animated hide" id="signUpBox3">
             <h1>Confirm your Password</h1>
-            <h3 id="errorMessage" hidden></h3>
+            <h3 id="errorMessage" class="hide"></h3>
             <input type="text" placeholder="Password" id="cnfrmUp" /><br />
             <div id="buttons"><button>Back</button><button>Next</button></div>
-          </div>
-
-          <!-- LOADER provided by loading.io/css/ -->
-          <div class="lds-contain">
-            <div class="lds-rect">
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
           </div>
         </div>
       </div>
