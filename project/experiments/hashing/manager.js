@@ -59,34 +59,4 @@ function activatePage(currActive, newActive) {
   newActive.input.focus();
 }
 
-// Sign in: Username
-pages.signInBox1.root
-  .querySelector("#createAcc")
-  .addEventListener("click", (e) => {
-    pages.signInBox1.input.value = "";
-    activatePage(pages.signInBox1, pages.signUpBox1);
-  });
-
-pages.signInBox1.root
-  .querySelector("#cantAccess")
-  .addEventListener("click", (e) => {
-    pageError(pages.signInBox1, "Too bad!");
-  });
-
-pages.signInBox1.buttons.children[1].addEventListener("click", (e) => {});
-// Sign in: Password
-
-// Sign up: Username
-pages.signUpBox1.buttons.children[0].addEventListener("click", (e) => {
-  pages.signUpBox1.input.value = "";
-  activatePage(pages.signUpBox1, pages.signInBox1);
-});
-// Sign up: Password
-
-// Sign up: Confirm Password
-
-window.pages = pages;
-window.pageError = pageError;
-window.activatePage = activatePage;
-
-console.log(Users);
+export { pages, activatePage, pageError };
