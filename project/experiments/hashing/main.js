@@ -4,7 +4,7 @@ import { pages, activatePage, pageError } from "./manager.js";
 // loader reference
 let loader = document.getElementById("loader");
 
-if (window.Worker) {
+if (window.Worker && window.TextEncoder) {
   const Hashing = new Worker("./hashWorker.js");
   window.Hashing = Hashing;
   let users = loadUsers();
