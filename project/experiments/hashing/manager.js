@@ -28,6 +28,8 @@ let pages = Array.from(document.querySelectorAll(".animated")).reduce(
   {}
 );
 
+let loader = document.getElementById("loader");
+
 /**
  * @param {object} page
  * @param {string|undefined} message
@@ -59,4 +61,9 @@ function activatePage(currActive, newActive) {
   newActive.input.focus();
 }
 
-export { pages, activatePage, pageError };
+function toggleLoader() {
+  console.log(loader);
+  loader.classList.toggle("hide");
+}
+
+export { pages, activatePage, pageError, toggleLoader };

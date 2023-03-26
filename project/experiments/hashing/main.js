@@ -1,12 +1,12 @@
 // Import
-import { pages, activatePage, pageError } from "./manager.js";
+import { pages, activatePage, pageError, toggleLoader } from "./manager.js";
 
 // loader reference
 let loader = document.getElementById("loader");
 
+// I decided to go with a Web Worker for hashing, mostly just so I could try out Web Workers, plus I was curious if the multithreading allowed by Web Workers would help speed things up. However, hashing is already pretty quick, so in reality, I'm just overcomplicating things
 if (window.Worker && window.TextEncoder) {
   const Hashing = new Worker("./hashWorker.js");
-  window.Hashing = Hashing;
   let users = loadUsers();
   // Sign in: Username
   // Go to account creation
@@ -23,7 +23,9 @@ if (window.Worker && window.TextEncoder) {
       pageError(pages.signInBox1, "Too bad!");
     });
   // Attempt login
-  pages.signInBox1.buttons.children[1].addEventListener("click", (e) => {});
+  pages.signInBox1.buttons.children[1].addEventListener("click", (e) => {
+    toggleLoader();
+  });
   // Sign in: Password
 
   // Sign up: Username
