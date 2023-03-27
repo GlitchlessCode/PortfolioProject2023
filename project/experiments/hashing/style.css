@@ -18,7 +18,8 @@ h3 {
   margin-top: 10px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
   background: none;
@@ -30,13 +31,15 @@ input[type="text"] {
   border-bottom: 1px solid black;
 }
 
-input:focus[type="text"] {
+input:focus[type="text"],
+input:focus[type="password"] {
   background: #64646415;
   outline: none;
   border-bottom: 1px solid #176dbd;
 }
 
-input:hover[type="text"] {
+input:hover[type="text"],
+input:hover[type="password"] {
   background: #64646415;
   outline: none;
   border-bottom: 1px solid black;

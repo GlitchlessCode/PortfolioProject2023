@@ -61,9 +61,9 @@ function activatePage(currActive, newActive) {
   newActive.input.focus();
 }
 
-function toggleLoader() {
-  console.log(loader);
-  loader.classList.toggle("hide");
+function setLoader(bool) {
+  if (bool) loader.classList.remove("hide");
+  else loader.classList.add("hide");
 }
 
-export { pages, activatePage, pageError, toggleLoader };
+export { pages, activatePage, pageError, setLoader };

@@ -32,7 +32,7 @@
           </div>
           <div class="animated" id="signInBox1">
             <h1>Sign in</h1>
-            <h3 class="errorMessage" class="hide"></h3>
+            <h3 class="errorMessage hide"></h3>
             <input type="text" placeholder="Username" autofocus id="usrnmIn" />
             <p>
               No account?
@@ -50,17 +50,29 @@
 
           <div class="animated hide" id="signInBox2">
             <h1>Enter Password</h1>
-            <h3 class="errorMessage" class="hide"></h3>
-            <input type="text" placeholder="Password" id="pswrdIn" />
-            <p><span class="fakeLink">Forgot your password?</span></p>
+            <h3 class="errorMessage hide"></h3>
+            <input type="password" placeholder="Password" id="pswrdIn" />
+            <p>
+              <span class="fakeLink" id="forgotPass"
+                >Forgot your password?</span
+              >
+            </p>
             <div class="buttons">
               <button>Back</button><button>Sign In</button>
             </div>
           </div>
 
+          <div class="animated hide" id="signedIn">
+            <h1>You have successfully signed in!</h1>
+            <h3>You are signed in as <span class="user"></span></h3>
+            <div class="buttons">
+              <button>Sign Out</button>
+            </div>
+          </div>
+
           <div class="animated hide" id="signUpBox1">
             <h1>Create Account</h1>
-            <h3 class="errorMessage" class="hide"></h3>
+            <h3 class="errorMessage hide"></h3>
             <input type="text" placeholder="Username" id="usrnmUp" />
             <div class="buttons">
               <button>Back</button><button>Next</button>
@@ -69,8 +81,8 @@
 
           <div class="animated hide" id="signUpBox2">
             <h1>Create a Password</h1>
-            <h3 class="errorMessage" class="hide"></h3>
-            <input type="text" placeholder="Password" id="pswrdUp" /><br />
+            <h3 class="errorMessage hide"></h3>
+            <input type="password" placeholder="Password" id="pswrdUp" /><br />
             <label for="showPswrd">Show Password?</label>
             <input type="checkbox" name="showPswrd" id="showPswrd" />
             <div class="buttons">
@@ -80,10 +92,18 @@
 
           <div class="animated hide" id="signUpBox3">
             <h1>Confirm your Password</h1>
-            <h3 class="errorMessage" class="hide"></h3>
-            <input type="text" placeholder="Password" id="cnfrmUp" /><br />
+            <h3 class="errorMessage hide"></h3>
+            <input type="password" placeholder="Password" id="cnfrmUp" /><br />
             <div class="buttons">
               <button>Back</button><button>Next</button>
+            </div>
+          </div>
+
+          <div class="animated hide" id="signedUp">
+            <h1>You have successfully signed up!</h1>
+            <h3>You have signed up as <span class="user"></span></h3>
+            <div class="buttons">
+              <button>Return To Sign In</button>
             </div>
           </div>
         </div>
