@@ -35,12 +35,13 @@ function createToolbar() {
   // MODIFY
   styler.innerHTML = `
     #tbContain{
-      position:absolute;
+      position:fixed;
       left:0;
       right:0;
       bottom:0;
       top:0;
       overflow:hidden;
+      pointer-events:none;
     }
 
     #tbMain{
@@ -56,6 +57,7 @@ function createToolbar() {
       z-index:100;
       box-shadow: 0px 0px 15px #aaaaaa;
       transition: all 0.5s cubic-bezier(0.75, 0, 0.25, 1);
+      pointer-events:all;
     }
 
     #tbMain.tbClose{
