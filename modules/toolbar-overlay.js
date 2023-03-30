@@ -1,4 +1,4 @@
-function createToolbar() {
+function createToolbar(openDefault) {
   // GET
   let body = document.querySelector("body");
 
@@ -15,11 +15,14 @@ function createToolbar() {
   // Grid container
   let grid = document.createElement("div");
 
-  // Test Element 1
-  let test1 = document.createElement("div");
+  // Home Button
+  let homeBtn = document.createElement("div");
 
-  // Test Element 1
-  let test2 = document.createElement("div");
+  // Project Button
+  let projectBtn = document.createElement("div");
+
+  // About Button
+  let aboutBtn = document.createElement("div");
 
   // Arrow Container Element
   let arrowContain = document.createElement("div");
@@ -28,12 +31,17 @@ function createToolbar() {
   let arrowMain = document.createElement("div");
 
   // Arrow elements
-  let a = document.createElement("a");
+  let arrow = document.createElement("div");
   let span1 = document.createElement("span");
   let span2 = document.createElement("span");
 
   // MODIFY
   styler.innerHTML = `
+    html {
+      background: linear-gradient(-70deg, #ddefdd, #dddddf, #efdddd);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     #tbContain{
       position:fixed;
       left:0;
@@ -45,7 +53,7 @@ function createToolbar() {
     }
 
     #tbMain{
-      background: #aaaaaa;
+      background: #f5f5f5;
       position:absolute;
       display: flex;
       justify-content:center;
@@ -55,36 +63,49 @@ function createToolbar() {
       top:0;
       padding: 16px 0 8px 0;
       z-index:100;
-      box-shadow: 0px 0px 15px #aaaaaa;
+      box-shadow: 0 0 6px #b0b0b0;
       transition: all 0.5s cubic-bezier(0.75, 0, 0.25, 1);
       pointer-events:all;
     }
 
     #tbMain.tbClose{
       transform: translateY(-100%);
+      background: #b0b0b0;
     }
 
     #tbGrid{
       width: fit-content;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
     }
 
-    .tbTest{
-      background:white;
+    .tbBtns{
+      user-select: none;
+      cursor: pointer;
       width:fit-content;
       margin: 0 5px;
       padding: 8px 24px;
+      text-align:center;
+      display:inline-block;
+      transition: 0.5s cubic-bezier(0, 0.7, 0.3, 1);
+    }
+
+    .tbBtns:hover{
+      text-shadow: 0 5px 2px #a0a0a0;
+      transform: scale(1.05, 1.05);
     }
 
     #tbArrowContain{
-      background: linear-gradient(#a0a0a0, #aaaaaa 50%);
+      background: #f5f5f5;
       position:absolute;
       width:58.4px;
       height:29.2px;
       right:0;
-      bottom:-29.2px;
+      bottom:-28px;
       border-radius: 0 0 0 10px;
+      transition: all 0.5s cubic-bezier(0.75, 0, 0.25, 1);
+    }
+
+    #tbMain.tbClose #tbArrowContain{
+      background: #b0b0b0;
     }
 
     /* Arrow provided by https://codepen.io/mattbraun/pen/EywBJR */
@@ -103,7 +124,16 @@ function createToolbar() {
       cursor: pointer;
       border-radius: 4px;
       transform: scale(0.5, 0.5);
+      transition: 0.5s cubic-bezier(0, 0.7, 0.3, 1);
    }
+    .tbArrowIcon:hover {
+      filter: drop-shadow(0 5px 2px #a0a0a0);
+      transform: scale(0.55, 0.55);
+    }
+    #tbMain.tbClose .tbArrowIcon:hover {
+      filter: drop-shadow(0 5px 2px #5f5f5f);
+      transform: scale(0.55, 0.55);
+    }
     .tbLeftBar {
       position: absolute;
       background-color: transparent;
@@ -118,7 +148,7 @@ function createToolbar() {
    }
     .tbLeftBar:after {
       content: "";
-      background-color: white;
+      background-color: #b0b0b0;
       width: 40px;
       height: 10px;
       display: block;
@@ -141,7 +171,7 @@ function createToolbar() {
    }
     .tbRightBar:after {
       content: "";
-      background-color: white;
+      background-color: #b0b0b0;
       width: 40px;
       height: 10px;
       display: block;
@@ -153,10 +183,12 @@ function createToolbar() {
     .tbClose .tbLeftBar:after {
       transform-origin: center center;
       transform: rotate(-70deg);
+      background-color: #f5f5f5;
    }
     .tbClose .tbRightBar:after {
       transform-origin: center center;
       transform: rotate(70deg);
+      background-color: #f5f5f5;
    }
     /* End of arrow code */
   `;
@@ -166,40 +198,46 @@ function createToolbar() {
 
   grid.id = "tbGrid";
 
-  test1.innerHTML = "Some Contents";
-  test1.classList.add("tbTest");
+  homeBtn.innerHTML = "Home";
+  homeBtn.classList.add("tbBtns");
 
-  test2.innerHTML = "More Contents";
-  test2.classList.add("tbTest");
+  projectBtn.innerHTML = "Projects";
+  projectBtn.classList.add("tbBtns");
+
+  aboutBtn.innerHTML = "About";
+  aboutBtn.classList.add("tbBtns");
 
   arrowContain.id = "tbArrowContain";
   arrowMain.id = "tbArrowMain";
-  a.classList.add("tbArrowIcon");
+  arrow.classList.add("tbArrowIcon");
   span1.classList.add("tbLeftBar");
   span2.classList.add("tbRightBar");
 
-  a.addEventListener("click", function () {
-    a.classList.toggle("tbClose");
+  arrow.addEventListener("click", function () {
+    arrow.classList.toggle("tbClose");
     main.classList.toggle("tbClose");
   });
+
+  if (!openDefault) {
+    arrow.classList.add("tbClose");
+    main.classList.add("tbClose");
+  }
 
   // APPEND
   container.append(main);
 
-  main.append(grid);
-  main.append(arrowContain);
+  main.append(grid, arrowContain);
 
-  grid.append(test1, test2);
+  grid.append(homeBtn, projectBtn, aboutBtn);
 
   arrowContain.append(arrowMain);
 
-  arrowMain.append(a);
+  arrowMain.append(arrow);
 
-  a.append(span1, span2);
+  arrow.append(span1, span2);
 
   // FINAL APPENDS
-  body.append(styler);
-  body.append(container);
+  body.prepend(styler, container);
 }
 
 export { createToolbar };

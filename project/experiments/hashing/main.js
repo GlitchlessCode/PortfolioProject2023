@@ -1,5 +1,8 @@
 // Import
+import { createToolbar } from "../../../modules/toolbar-overlay.js";
 import { pages, activatePage, pageError, setLoader } from "./manager.js";
+
+createToolbar(false);
 
 // I decided to go with a Web Worker for hashing, mostly just so I could try out Web Workers, though any multithreading advantages from using web workers is non functional in my code, so in reality, I'm just overcomplicating things
 if (window.Worker && window.TextEncoder) {
