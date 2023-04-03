@@ -1,5 +1,5 @@
 // Import
-import { createToolbar } from "../../../modules/toolbar-overlay.js";
+import { createToolbar } from "/modules/toolbar-overlay.js";
 import { pages, activatePage, pageError, setLoader } from "./manager.js";
 
 createToolbar(false);

@@ -1,7 +1,7 @@
 // With help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 // -- Imports --
-import { grid } from "../../../modules/grid.js";
+import { grid } from "/modules/grid.js";
 
 // -- Initialize Variables --
 

@@ -1,4 +1,4 @@
-import { swap } from "./array-functions.js";
+import { swap } from "/modules/array-functions.js";
 
 // Private Utilities
 
