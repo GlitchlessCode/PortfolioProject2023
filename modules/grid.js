@@ -90,4 +90,4 @@ class grid {
   }
 }
 
-export { grid, gridSquare, drawGrid };
+export { grid, gridSquare };

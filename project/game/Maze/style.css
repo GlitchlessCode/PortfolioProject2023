@@ -1,17 +1,5 @@
-:root {
-  --color1: #124559;
-  --color2: #598392;
-  --color3: #c5d3d0;
-  --color4: #f5f5f5;
-}
-
-/* Elements */
-body {
-  background-color: var(--color1);
-}
-
 canvas {
-  background-color: var(--color4);
+  background-color: #f5f5f5;
   position: relative;
   z-index: 20;
   margin: 5.5px;

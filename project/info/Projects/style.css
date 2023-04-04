@@ -80,6 +80,12 @@ h3 {
   z-index: 0;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
 #mainContainer {
   position: absolute;
   width: 100vw;
@@ -88,10 +94,4 @@ h3 {
   align-items: center;
   pointer-events: none;
   z-index: 0;
-}
-
-#grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
 }

@@ -2,6 +2,9 @@
 
 // -- Imports --
 import { grid } from "/modules/grid.js";
+import { createToolbar } from "/modules/toolbar-overlay.js";
+
+createToolbar(false);
 
 // -- Initialize Variables --
 
@@ -13,8 +16,8 @@ let cnv = document.getElementById("mazeCanvas");
 /** @type {CanvasRenderingContext2D} */
 let ctx = cnv.getContext("2d");
 
-cnv.width = 100;
-cnv.height = 100;
+cnv.width = screen.width;
+cnv.height = screen.height;
 
 // -- Add Event Listeners --
 
