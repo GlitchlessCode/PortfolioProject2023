@@ -1,6 +1,7 @@
 // With help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 // -- Imports --
+import { gridSquare } from "../../../modules/grid.js";
 import { grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
 
@@ -15,14 +16,15 @@ let cnv = document.getElementById("mazeCanvas");
 let btn = document.getElementById("fullscreen");
 
 // -- Canvas Worker Setup --
-let size = Math.min(screen.width, screen.height);
-cnv.width = size;
-cnv.height = size;
+cnv.width = screen.width;
+cnv.height = screen.height;
 const offCnv = cnv.transferControlToOffscreen();
 const Drawing = new Worker("./drawWorker.js");
 Drawing.postMessage({ type: "init", canvas: offCnv }, [offCnv]);
 
 // -- Add Event Listeners --
+document.addEventListener("keydown", function (event) {});
+
 document.addEventListener("fullscreenchange", function () {
   if (document.fullscreenElement === cnv) {
     cnv.hidden = false;
@@ -32,9 +34,10 @@ document.addEventListener("fullscreenchange", function () {
 });
 
 screen.addEventListener("change", function () {
-  let size = Math.min(screen.width, screen.height);
-  let test = screen.height > screen.width;
-  Drawing.postMessage({ type: "dim", size, test });
+  Drawing.postMessage({
+    type: "dim",
+    dim: { w: screen.width, h: screen.height },
+  });
 });
 
 btn.addEventListener("click", function () {
@@ -43,18 +46,29 @@ btn.addEventListener("click", function () {
 
 // -- Functions --
 
-// -- Draw Loop --
+// -- Classes --
 
-requestAnimationFrame(draw);
-
-function draw() {
-  offCnv.width = screen.width;
-  offCnv.height = screen.height;
-
-  requestAnimationFrame(draw);
+class mazeSquare extends gridSquare {
+  walls = { left: 1, top: 1 };
+  constructor(x, y) {
+    super(x, y);
+    if (x === 0) {
+      this.walls.left = 0;
+    }
+    if (y === 0) {
+      this.walls.top = 0;
+    }
+  }
 }
 
-let test = new grid(8, 6);
+class maze extends grid {
+  displayFull() {
+    let result = structuredClone(this.flattenedArray);
+    return result;
+  }
+}
 
-// Temporary: Just for testing systems from console
+// -- Testing [TEMPORARY] --
+let test = new maze(8, 6, mazeSquare);
+
 window.test = test;

@@ -24,7 +24,7 @@ function fillerFunction(e, index) {
 }
 
 class grid {
-  #flattenedArray = new Array();
+  flattenedArray = new Array();
   #sets = new Object();
   fillerObject;
   dimensions = { w: 0, h: 0 };
@@ -57,7 +57,7 @@ class grid {
     this.dimensions = { w: width, h: height };
 
     // Create 2 dimensional representation
-    this.#flattenedArray = Array.from(
+    this.flattenedArray = Array.from(
       { length: width * height },
       fillerFunction,
       this
@@ -71,7 +71,7 @@ class grid {
       throw new RangeError("x is out of range");
     if (y > this.dimensions.h - 1 || y < 0)
       throw new RangeError("y is out of range");
-    return this.#flattenedArray[x + y * this.dimensions.w];
+    return this.flattenedArray[x + y * this.dimensions.w];
   }
 
   createSet(name) {
