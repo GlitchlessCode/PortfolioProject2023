@@ -1,9 +1,10 @@
 // With help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 // -- Imports --
-import { gridSquare } from "../../../modules/grid.js";
+import { gridSquare } from "/modules/grid.js";
 import { grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
+import { randomInt } from "/modules/random-lib.js";
 
 createToolbar(false);
 
@@ -50,8 +51,9 @@ btn.addEventListener("click", function () {
 
 class mazeSquare extends gridSquare {
   walls = { left: 1, top: 1 };
-  constructor(x, y) {
-    super(x, y);
+  set = undefined;
+  constructor(x, y, fillerObject) {
+    super(x, y, fillerObject);
     if (x === 0) {
       this.walls.left = 0;
     }
@@ -62,9 +64,34 @@ class mazeSquare extends gridSquare {
 }
 
 class maze extends grid {
+  setCount;
   displayFull() {
     let result = structuredClone(this.flattenedArray);
     return result;
+  }
+
+  ellers() {
+    this.setCount = 0;
+    this.initRow(0);
+  }
+
+  initRow(row) {
+    for (let i = 0; i < this.dimensions.w; i++) {
+      let cell = this.getPos(i, row);
+      if (!cell.inSet) {
+        cell.addToSet(this.createSet(this.setCount));
+        cell.set = this.setCount;
+        this.setCount++;
+      }
+    }
+  }
+
+  verticalJoin(left) {
+    this.getPos(left.x, left.y);
+  }
+
+  horizontalJoin(top) {
+    this.getPos();
   }
 }
 

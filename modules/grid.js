@@ -77,6 +77,7 @@ class grid {
   createSet(name) {
     if (this.#sets[name]) return;
     this.#sets[name] = new Set();
+    return this.#sets[name];
   }
 
   getSet(name) {
