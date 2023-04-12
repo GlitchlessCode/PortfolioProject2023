@@ -87,7 +87,9 @@ class grid {
 
   removeSet(name) {
     if (!(this.#sets[name] instanceof Set)) return;
+    let result = this.#sets[name];
     delete this.#sets[name];
+    return result;
   }
 }
 

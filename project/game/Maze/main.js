@@ -1,10 +1,10 @@
-// With help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
+// With slight help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 // -- Imports --
 import { gridSquare } from "/modules/grid.js";
 import { grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
-import { randomInt } from "/modules/random-lib.js";
+import { randomInt, randomFloat } from "/modules/random-lib.js";
 
 createToolbar(false);
 
@@ -54,12 +54,6 @@ class mazeSquare extends gridSquare {
   set = undefined;
   constructor(x, y, fillerObject) {
     super(x, y, fillerObject);
-    if (x === 0) {
-      this.walls.left = 0;
-    }
-    if (y === 0) {
-      this.walls.top = 0;
-    }
   }
 }
 
@@ -70,12 +64,20 @@ class maze extends grid {
     return result;
   }
 
-  ellers() {
+  ellers(chance, dataCallback) {
+    if (!Number.isFinite(chance)) throw new TypeError("chance is not a Number");
+    if (chance <= 0 || chance > 1) throw new RangeError("chance out of range");
+
     this.setCount = 0;
-    this.initRow(0);
+
+    for (let currRow = 0; currRow < this.dimensions.h - 1; currRow++) {
+      this.runRow(currRow, chance);
+      this.verticalSets();
+      return;
+    }
   }
 
-  initRow(row) {
+  runRow(row, chance) {
     for (let i = 0; i < this.dimensions.w; i++) {
       let cell = this.getPos(i, row);
       if (!cell.inSet) {
@@ -83,15 +85,47 @@ class maze extends grid {
         cell.set = this.setCount;
         this.setCount++;
       }
+      if (i === 0) continue;
+      let left = this.getPos(i - 1, row);
+      if (left.set === cell.set) continue;
+      let rand = randomFloat(0, 1);
+      if (rand < chance) continue;
+      this.horizontalJoin(i - 1, row);
     }
   }
 
-  verticalJoin(left) {
-    this.getPos(left.x, left.y);
+  verticalSets() {}
+
+  horizontalJoin(leftX, leftY) {
+    let left = this.getPos(leftX, leftY);
+    let right = this.getPos(leftX + 1, leftY);
+    let leftSet = this.getSet(left.set);
+    right.walls.left = 0;
+    if (right.set) {
+      this.removeSet(right.set).forEach(function (element) {
+        element.set = left.set;
+        element.addToSet(leftSet);
+      });
+    } else {
+      right.set = left.set;
+      right.addToSet(leftSet);
+    }
   }
 
-  horizontalJoin(top) {
-    this.getPos();
+  verticalJoin(topX, topY) {
+    let top = this.getPos(topX, topY);
+    let bottom = this.getPos(topX, topY + 1);
+    let topSet = this.getSet(top.set);
+    bottom.walls.top = 0;
+    if (bottom.set) {
+      this.removeSet(bottom.set).forEach(function (element) {
+        element.set = top.set;
+        element.addToSet(topSet);
+      });
+    } else {
+      bottom.set = top.set;
+      bottom.addToSet(topSet);
+    }
   }
 }
 
