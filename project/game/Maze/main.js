@@ -71,20 +71,25 @@ class maze extends grid {
     this.setCount = 0;
 
     for (let currRow = 0; currRow < this.dimensions.h - 1; currRow++) {
-      this.runRow(currRow, chance);
-      this.verticalSets();
+      console.log(this.runRow(currRow, chance));
+      if (currRow === this.dimensions.h - 1) break;
+      this.verticalizeSets(currRow, chance);
       return;
     }
   }
 
   runRow(row, chance) {
+    let cells = new Array();
     for (let i = 0; i < this.dimensions.w; i++) {
       let cell = this.getPos(i, row);
+      cells.push(cell);
+
       if (!cell.inSet) {
         cell.addToSet(this.createSet(this.setCount));
         cell.set = this.setCount;
         this.setCount++;
       }
+
       if (i === 0) continue;
       let left = this.getPos(i - 1, row);
       if (left.set === cell.set) continue;
@@ -92,9 +97,18 @@ class maze extends grid {
       if (rand < chance) continue;
       this.horizontalJoin(i - 1, row);
     }
+    return cells;
   }
 
-  verticalSets() {}
+  verticalizeSets(chance) {
+    for (let i = 0; i < this.setCount; i++) {
+      let set = this.getSet(i);
+      if (!set) continue;
+
+      let setChance = -1 * (1 / set.size) + chance;
+      console.log(set, setChance);
+    }
+  }
 
   horizontalJoin(leftX, leftY) {
     let left = this.getPos(leftX, leftY);
@@ -110,6 +124,7 @@ class maze extends grid {
       right.set = left.set;
       right.addToSet(leftSet);
     }
+    this.setCount--;
   }
 
   verticalJoin(topX, topY) {
@@ -126,6 +141,7 @@ class maze extends grid {
       bottom.set = top.set;
       bottom.addToSet(topSet);
     }
+    this.setCount--;
   }
 }
 
