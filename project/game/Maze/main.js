@@ -5,6 +5,7 @@ import { gridSquare } from "/modules/grid.js";
 import { grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
 import { randomInt, randomFloat } from "/modules/random-lib.js";
+import { swap } from "/modules/array-functions.js";
 
 createToolbar(false);
 
@@ -71,10 +72,10 @@ class maze extends grid {
     this.setCount = 0;
 
     for (let currRow = 0; currRow < this.dimensions.h - 1; currRow++) {
+      console.log(this.setCount);
       console.log(this.runRow(currRow, chance));
       if (currRow === this.dimensions.h - 1) break;
-      this.verticalizeSets(currRow, chance);
-      return;
+      this.verticalizeSets(chance);
     }
   }
 
@@ -84,18 +85,25 @@ class maze extends grid {
       let cell = this.getPos(i, row);
       cells.push(cell);
 
-      if (!cell.inSet) {
-        cell.addToSet(this.createSet(this.setCount));
+      if (cell.set) console.log("existing");
+      if (!cell.set) {
+        let set = this.createSet(this.setCount);
+        console.log(cell, cell.set, set, this.setCount);
+        console.log(this.getSet(this.setCount));
+        cell.addToSet(set);
         cell.set = this.setCount;
         this.setCount++;
       }
-
-      if (i === 0) continue;
-      let left = this.getPos(i - 1, row);
+    }
+    console.log(cells);
+    for (const [index, cell] of cells.entries()) {
+      if (index === 0) continue;
+      let left = this.getPos(index - 1, row);
       if (left.set === cell.set) continue;
       let rand = randomFloat(0, 1);
-      if (rand < chance) continue;
-      this.horizontalJoin(i - 1, row);
+      if (rand > chance) continue;
+      console.log(`Merge ${index - 1}, ${index}, at Y=${row}`);
+      this.horizontalJoin(index - 1, row);
     }
     return cells;
   }
@@ -105,8 +113,29 @@ class maze extends grid {
       let set = this.getSet(i);
       if (!set) continue;
 
-      let setChance = -1 * (1 / set.size) + chance;
-      console.log(set, setChance);
+      let rand = randomInt(0, set.size);
+
+      let holder = [...set];
+      set.clear();
+
+      let firstJoin = holder[rand];
+
+      this.verticalJoin(firstJoin.position.x, firstJoin.position.y);
+
+      if (holder.length === 1) continue;
+
+      swap(holder, rand, holder.length - 1);
+      holder.pop();
+
+      let setChance = Math.max((-1 + chance) * (1 / holder.length) + chance, 0);
+
+      for (let n = 0; n < holder.length; n++) {
+        rand = randomFloat(0, 1);
+        if (rand > setChance) continue;
+
+        let cellPos = holder[n].position;
+        this.verticalJoin(cellPos.x, cellPos.y);
+      }
     }
   }
 
@@ -120,11 +149,11 @@ class maze extends grid {
         element.set = left.set;
         element.addToSet(leftSet);
       });
+      this.setCount--;
     } else {
       right.set = left.set;
       right.addToSet(leftSet);
     }
-    this.setCount--;
   }
 
   verticalJoin(topX, topY) {
@@ -137,11 +166,11 @@ class maze extends grid {
         element.set = top.set;
         element.addToSet(topSet);
       });
+      this.setCount--;
     } else {
       bottom.set = top.set;
       bottom.addToSet(topSet);
     }
-    this.setCount--;
   }
 }
 
