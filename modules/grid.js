@@ -75,10 +75,7 @@ class grid {
   }
 
   createSet(name) {
-    console.log(name);
-    if (this.#sets[name]) console.log(this.#sets[name]);
     if (this.#sets[name]) return;
-    console.log("created");
     this.#sets[name] = new Set();
     return this.#sets[name];
   }

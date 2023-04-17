@@ -69,14 +69,19 @@ class maze extends grid {
     if (!Number.isFinite(chance)) throw new TypeError("chance is not a Number");
     if (chance <= 0 || chance > 1) throw new RangeError("chance out of range");
 
-    this.setCount = 0;
+    this.setCount = 1;
 
-    for (let currRow = 0; currRow < this.dimensions.h - 1; currRow++) {
-      console.log(this.setCount);
-      console.log(this.runRow(currRow, chance));
+    for (let currRow = 0; currRow < this.dimensions.h; currRow++) {
+      console.log(currRow);
+      this.runRow(currRow, chance);
       if (currRow === this.dimensions.h - 1) break;
       this.verticalizeSets(chance);
     }
+
+    Drawing.postMessage({
+      type: "frame",
+      data: { arr: this.flattenedArray, dim: this.dimensions },
+    });
   }
 
   runRow(row, chance) {
@@ -85,24 +90,20 @@ class maze extends grid {
       let cell = this.getPos(i, row);
       cells.push(cell);
 
-      if (cell.set) console.log("existing");
       if (!cell.set) {
         let set = this.createSet(this.setCount);
-        console.log(cell, cell.set, set, this.setCount);
-        console.log(this.getSet(this.setCount));
         cell.addToSet(set);
         cell.set = this.setCount;
         this.setCount++;
       }
     }
-    console.log(cells);
+
     for (const [index, cell] of cells.entries()) {
       if (index === 0) continue;
       let left = this.getPos(index - 1, row);
       if (left.set === cell.set) continue;
       let rand = randomFloat(0, 1);
       if (rand > chance) continue;
-      console.log(`Merge ${index - 1}, ${index}, at Y=${row}`);
       this.horizontalJoin(index - 1, row);
     }
     return cells;
@@ -149,7 +150,6 @@ class maze extends grid {
         element.set = left.set;
         element.addToSet(leftSet);
       });
-      this.setCount--;
     } else {
       right.set = left.set;
       right.addToSet(leftSet);
@@ -161,16 +161,16 @@ class maze extends grid {
     let bottom = this.getPos(topX, topY + 1);
     let topSet = this.getSet(top.set);
     bottom.walls.top = 0;
-    if (bottom.set) {
-      this.removeSet(bottom.set).forEach(function (element) {
-        element.set = top.set;
-        element.addToSet(topSet);
-      });
-      this.setCount--;
-    } else {
-      bottom.set = top.set;
-      bottom.addToSet(topSet);
-    }
+
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.addToSet(topSet);
+    bottom.set = top.set;
   }
 }
 

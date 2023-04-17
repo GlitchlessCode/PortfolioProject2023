@@ -19,11 +19,20 @@ addEventListener("message", function (msg) {
       cnv.height = Math.floor(data.dim.h);
       break;
     case "frame":
+      frame = data.data;
       break;
   }
 });
 
 function draw() {
   ctx.clearRect(0, 0, cnv.width, cnv.height);
+  if (frame) {
+    ctx.fillStyle = "grey";
+    for (let w = 0; w < frame.dim.w; w++) {
+      for (let h = 0; h < frame.dim.h; h++) {
+        ctx.fillRect(w * 25 + 10, h * 25 + 10, 20, 20);
+      }
+    }
+  }
   requestAnimationFrame(draw);
 }
