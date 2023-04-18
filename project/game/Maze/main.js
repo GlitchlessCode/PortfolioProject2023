@@ -47,6 +47,13 @@ btn.addEventListener("click", function () {
 
 // -- Functions --
 
+function sendFrame(deltas) {
+  Drawing.postMessage({
+    type: "frame",
+    deltas,
+  });
+}
+
 // -- Classes --
 
 class mazeSquare extends gridSquare {
@@ -60,8 +67,11 @@ class mazeSquare extends gridSquare {
 class maze extends grid {
   setCount;
   displayFull() {
-    let result = structuredClone(this.flattenedArray);
-    return result;
+    Drawing.postMessage({
+      type: "create",
+      arr: this.flattenedArray,
+      dim: this.dimensions,
+    });
   }
 
   ellers(chance, dataCallback) {
@@ -76,29 +86,29 @@ class maze extends grid {
     this.setCount = 1;
     this.clearSets();
 
+    this.displayFull();
+
     for (let currRow = 0; currRow < this.dimensions.h; currRow++) {
-      this.runRow(currRow, chance, dataCallback);
+      dataCallback(this.runRow(currRow, chance));
       if (currRow === this.dimensions.h - 1) break;
-      this.verticalizeSets(chance, dataCallback);
+      dataCallback(this.verticalizeSets(chance));
     }
 
     this.finalizeMaze(this.dimensions.h - 1, dataCallback);
-
-    Drawing.postMessage({
-      type: "frame",
-      data: { arr: this.flattenedArray, dim: this.dimensions },
-    });
   }
 
   finalizeMaze(row, dataCallback) {
+    let cells = new Array();
     for (let i = 0; i < this.dimensions.w - 1; i++) {
       let cell = this.getPos(i, row);
       let rightCell = this.getPos(i + 1, row);
 
       if (cell.set === rightCell.set) continue;
 
+      cells.push(rightCell);
       this.horizontalJoin(cell.position.x, cell.position.y);
     }
+    dataCallback(cells);
   }
 
   runRow(row, chance) {
@@ -127,6 +137,7 @@ class maze extends grid {
   }
 
   verticalizeSets(chance) {
+    let cells = new Array();
     for (let i = 0; i < this.setCount; i++) {
       let set = this.getSet(i);
       if (!set) continue;
@@ -137,6 +148,8 @@ class maze extends grid {
       set.clear();
 
       let firstJoin = holder[rand];
+
+      cells.push(firstJoin);
 
       this.verticalJoin(firstJoin.position.x, firstJoin.position.y);
 
@@ -151,10 +164,12 @@ class maze extends grid {
         rand = randomFloat(0, 1);
         if (rand > setChance) continue;
 
+        cells.push(holder[n]);
         let cellPos = holder[n].position;
         this.verticalJoin(cellPos.x, cellPos.y);
       }
     }
+    return cells;
   }
 
   horizontalJoin(leftX, leftY) {
@@ -195,3 +210,4 @@ class maze extends grid {
 let test = new maze(24, 18, mazeSquare);
 
 window.test = test;
+window.sendFrame = sendFrame;
