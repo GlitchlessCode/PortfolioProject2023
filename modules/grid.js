@@ -85,6 +85,12 @@ class grid {
     return this.#sets[name];
   }
 
+  clearSets() {
+    for (const [key, value] of Object.entries(this.#sets)) {
+      delete this.#sets[key];
+    }
+  }
+
   removeSet(name) {
     if (!(this.#sets[name] instanceof Set)) return;
     let result = this.#sets[name];

@@ -27,12 +27,28 @@ addEventListener("message", function (msg) {
 function draw() {
   ctx.clearRect(0, 0, cnv.width, cnv.height);
   if (frame) {
-    ctx.fillStyle = "grey";
-    for (let w = 0; w < frame.dim.w; w++) {
-      for (let h = 0; h < frame.dim.h; h++) {
-        ctx.fillRect(w * 25 + 10, h * 25 + 10, 20, 20);
+    // ctx.fillStyle = "grey";
+    // for (let w = 0; w < frame.dim.w; w++) {
+    //   for (let h = 0; h < frame.dim.h; h++) {
+    //     ctx.fillRect(w * 25 + 20, h * 25 + 20, 20, 20);
+    //   }
+    // }
+    ctx.fillStyle = "black";
+    frame.arr.forEach(function (element) {
+      let pos = element.position;
+      if (element.walls.top) {
+        ctx.fillRect(pos.x * 25 + 15, pos.y * 25 + 15, 30, 5);
       }
-    }
+      if (element.walls.left) {
+        ctx.fillRect(pos.x * 25 + 15, pos.y * 25 + 15, 5, 30);
+      }
+      if (pos.y === frame.dim.h - 1) {
+        ctx.fillRect(pos.x * 25 + 15, frame.dim.h * 25 + 15, 30, 5);
+      }
+      if (pos.x === frame.dim.w - 1) {
+        ctx.fillRect(frame.dim.w * 25 + 15, pos.y * 25 + 15, 5, 30);
+      }
+    });
   }
   requestAnimationFrame(draw);
 }

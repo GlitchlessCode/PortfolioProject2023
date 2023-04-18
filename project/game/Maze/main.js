@@ -1,8 +1,7 @@
 // With slight help from https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 // -- Imports --
-import { gridSquare } from "/modules/grid.js";
-import { grid } from "/modules/grid.js";
+import { gridSquare, grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
 import { randomInt, randomFloat } from "/modules/random-lib.js";
 import { swap } from "/modules/array-functions.js";
@@ -69,19 +68,37 @@ class maze extends grid {
     if (!Number.isFinite(chance)) throw new TypeError("chance is not a Number");
     if (chance <= 0 || chance > 1) throw new RangeError("chance out of range");
 
+    this.flattenedArray.forEach(function (cell) {
+      cell.set = undefined;
+      cell.walls = { left: 1, top: 1 };
+    });
+
     this.setCount = 1;
+    this.clearSets();
 
     for (let currRow = 0; currRow < this.dimensions.h; currRow++) {
-      console.log(currRow);
-      this.runRow(currRow, chance);
+      this.runRow(currRow, chance, dataCallback);
       if (currRow === this.dimensions.h - 1) break;
-      this.verticalizeSets(chance);
+      this.verticalizeSets(chance, dataCallback);
     }
+
+    this.finalizeMaze(this.dimensions.h - 1, dataCallback);
 
     Drawing.postMessage({
       type: "frame",
       data: { arr: this.flattenedArray, dim: this.dimensions },
     });
+  }
+
+  finalizeMaze(row, dataCallback) {
+    for (let i = 0; i < this.dimensions.w - 1; i++) {
+      let cell = this.getPos(i, row);
+      let rightCell = this.getPos(i + 1, row);
+
+      if (cell.set === rightCell.set) continue;
+
+      this.horizontalJoin(cell.position.x, cell.position.y);
+    }
   }
 
   runRow(row, chance) {
@@ -175,6 +192,6 @@ class maze extends grid {
 }
 
 // -- Testing [TEMPORARY] --
-let test = new maze(8, 6, mazeSquare);
+let test = new maze(24, 18, mazeSquare);
 
 window.test = test;
