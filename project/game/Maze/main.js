@@ -35,9 +35,14 @@ document.addEventListener("fullscreenchange", function () {
 });
 
 screen.addEventListener("change", function () {
+  let width = screen.width;
+  let height = screen.height;
+  let devicePixelRatio = window.devicePixelRatio;
+  width = Math.round(devicePixelRatio * width);
+  height = Math.round(devicePixelRatio * height);
   Drawing.postMessage({
     type: "dim",
-    dim: { w: screen.width, h: screen.height },
+    dim: { width, height },
   });
 });
 
@@ -194,13 +199,6 @@ class maze extends grid {
     let topSet = this.getSet(top.set);
     bottom.walls.top = 0;
 
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
-    bottom.addToSet(topSet);
     bottom.addToSet(topSet);
     bottom.set = top.set;
   }
