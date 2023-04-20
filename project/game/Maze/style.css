@@ -18,6 +18,11 @@ h3 {
   margin-top: 10px;
 }
 
+hr {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
 button {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
@@ -35,7 +40,8 @@ label {
   padding: 0.4rem 0.4rem 0.4rem 0rem;
 }
 
-input {
+input[type="range"],
+input[type="number"] {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
   background: none;
@@ -51,13 +57,13 @@ input[type="range"] {
   padding-right: 0;
 }
 
-input:focus {
+input[type="number"]:focus {
   background: #64646415;
   outline: none;
   border-bottom: 1px solid #176dbd;
 }
 
-input:hover {
+input[type="number"]:hover {
   background: #64646415;
   outline: none;
   border-bottom: 1px solid black;
@@ -76,6 +82,16 @@ button:disabled {
   background: #b7bbbd;
   border-color: #b7bbbd;
   color: black;
+}
+
+dialog {
+  background-color: #f5f5f5;
+  padding: 40px;
+  border: none;
+}
+
+dialog::backdrop {
+  background-color: #808080aa;
 }
 
 .container {
@@ -109,4 +125,24 @@ button:disabled {
   align-items: center;
   pointer-events: none;
   z-index: 0;
+}
+
+#dropZone {
+  margin-top: 20px;
+  margin-bottom: 10px;
+
+  border-radius: 15px;
+  border: #808080 dashed 4px;
+
+  background-color: #e4e4e4;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: 600;
+  font-size: 24px;
+
+  width: 500px;
+  height: 250px;
 }

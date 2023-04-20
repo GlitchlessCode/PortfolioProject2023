@@ -9,17 +9,31 @@
     <script src="./main.js" type="module" defer></script>
   </head>
   <body>
+    <dialog>
+      <h1>Load from File</h1>
+      <div id="dropZone">Drop Here</div>
+      <div class="buttons">
+        <button>Cancel</button>
+      </div>
+    </dialog>
+
     <div id="mainContainer">
       <div>
         <div class="container">
           <h1>Maze Generator</h1>
           <p>
             This is a maze generator, it uses Eller's algorithm to generate the
-            mazes. Use the settings below to control the maze
+            mazes.
           </p>
         </div>
         <div class="container">
           <h1>Controls</h1>
+          <p>
+            Use the input fields below to setup the maze generator, and press
+            Generate to generate the maze. <br />
+            Use WASD to move around the maze, and try to make your way to the
+            Exit.
+          </p>
           <hr />
           <div class="grid">
             <div>
