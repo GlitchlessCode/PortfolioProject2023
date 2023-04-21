@@ -14,7 +14,19 @@ createToolbar(false);
 /** @type {HTMLCanvasElement} */
 let cnv = document.getElementById("mazeCanvas");
 
-let btn = document.getElementById("fullscreen");
+let widthIn = document.getElementById("widthIn");
+let heightIn = document.getElementById("heightIn");
+let chanceIn = document.getElementById("chanceIn");
+
+let generateBtn = document.getElementById("generate");
+let fullscreenBtn = document.getElementById("fullscreen");
+let loadBtn = document.getElementById("load");
+let saveBtn = document.getElementById("save");
+
+let modalCancelBtn = document.getElementById("modalCancel");
+
+// Variables
+let mainMaze;
 
 // -- Canvas Worker Setup --
 cnv.width = screen.width;
@@ -24,17 +36,63 @@ const Drawing = new Worker("./drawWorker.js");
 Drawing.postMessage({ type: "init", canvas: offCnv }, [offCnv]);
 
 // -- Add Event Listeners --
-document.addEventListener("keydown", function (event) {});
+document.addEventListener("keydown", keyHandler);
 
-document.addEventListener("fullscreenchange", function () {
+document.addEventListener("fullscreenchange", fullscreenChange);
+
+screen.addEventListener("change", screenSizeChange);
+
+generateBtn.addEventListener("click", buttonClickHandler);
+fullscreenBtn.addEventListener("click", buttonClickHandler);
+loadBtn.addEventListener("click", buttonClickHandler);
+saveBtn.addEventListener("click", buttonClickHandler);
+
+modalCancelBtn.addEventListener("click", buttonClickHandler);
+
+// -- Functions --
+
+function buttonClickHandler(event) {
+  let id = event.target.id;
+
+  switch (id) {
+    case "generate":
+      generateMaze();
+      break;
+    case "fullscreen":
+      enterFullscreen();
+      break;
+  }
+}
+
+async function generateMaze() {
+  let width = parseInt(widthIn.value);
+  let height = parseInt(heightIn.value);
+  let chance = parseFloat(chanceIn.value);
+
+  await cnv.requestFullscreen();
+
+  mainMaze.create(width, height, mazeSquare);
+  mainMaze.ellers(chance);
+}
+
+async function enterFullscreen() {
+  await cnv.requestFullscreen();
+  if (mainMaze) {
+    mainMaze.displayFull();
+  }
+}
+
+function keyHandler(event) {}
+
+function fullscreenChange() {
   if (document.fullscreenElement === cnv) {
     cnv.hidden = false;
   } else {
     cnv.hidden = true;
   }
-});
+}
 
-screen.addEventListener("change", function () {
+function screenSizeChange() {
   let width = screen.width;
   let height = screen.height;
   let devicePixelRatio = window.devicePixelRatio;
@@ -44,13 +102,7 @@ screen.addEventListener("change", function () {
     type: "dim",
     dim: { width, height },
   });
-});
-
-btn.addEventListener("click", function () {
-  cnv.requestFullscreen();
-});
-
-// -- Functions --
+}
 
 function sendFrame(deltas) {
   Drawing.postMessage({
@@ -79,7 +131,7 @@ class maze extends grid {
     });
   }
 
-  ellers(chance, dataCallback) {
+  ellers(chance) {
     if (!Number.isFinite(chance)) throw new TypeError("chance is not a Number");
     if (chance <= 0 || chance > 1) throw new RangeError("chance out of range");
 
@@ -94,15 +146,15 @@ class maze extends grid {
     this.displayFull();
 
     for (let currRow = 0; currRow < this.dimensions.h; currRow++) {
-      dataCallback(this.runRow(currRow, chance));
+      sendFrame(this.runRow(currRow, chance));
       if (currRow === this.dimensions.h - 1) break;
-      dataCallback(this.verticalizeSets(chance));
+      sendFrame(this.verticalizeSets(chance));
     }
 
-    this.finalizeMaze(this.dimensions.h - 1, dataCallback);
+    this.finalizeMaze(this.dimensions.h - 1);
   }
 
-  finalizeMaze(row, dataCallback) {
+  finalizeMaze(row) {
     let cells = new Array();
     for (let i = 0; i < this.dimensions.w - 1; i++) {
       let cell = this.getPos(i, row);
@@ -113,7 +165,7 @@ class maze extends grid {
       cells.push(rightCell);
       this.horizontalJoin(cell.position.x, cell.position.y);
     }
-    dataCallback(cells);
+    sendFrame(cells);
   }
 
   runRow(row, chance) {
@@ -204,11 +256,10 @@ class maze extends grid {
   }
 }
 
-// -- Testing [TEMPORARY] --
-let test = new maze(24, 18, mazeSquare);
+// Create maze
+mainMaze = new maze(1, 1, mazeSquare);
 
-window.test = test;
-window.sendFrame = sendFrame;
+// -- Testing [TEMPORARY] --
 
 // let dropZone = document.getElementById("drop_zone");
 

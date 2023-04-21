@@ -47,21 +47,24 @@ function createToolbar(openDefault) {
 
   homeBtn.innerHTML = "Home";
   homeBtn.classList.add("tbBtns");
-  homeBtn.addEventListener("click", (e) => {
+  homeBtn.addEventListener("click", homeClicked);
+  function homeClicked() {
     location.replace("/");
-  });
+  }
 
   projectBtn.innerHTML = "Projects";
   projectBtn.classList.add("tbBtns");
-  projectBtn.addEventListener("click", (e) => {
+  projectBtn.addEventListener("click", projectClicked);
+  function projectClicked() {
     location.replace("/project/info/Projects/");
-  });
+  }
 
   aboutBtn.innerHTML = "About";
   aboutBtn.classList.add("tbBtns");
-  aboutBtn.addEventListener("click", (e) => {
+  aboutBtn.addEventListener("click", aboutClicked);
+  function aboutClicked() {
     location.replace("/project/info/About/");
-  });
+  }
 
   arrowContain.id = "tbArrowContain";
   arrowMain.id = "tbArrowMain";
@@ -69,10 +72,11 @@ function createToolbar(openDefault) {
   span1.classList.add("tbLeftBar");
   span2.classList.add("tbRightBar");
 
-  arrow.addEventListener("click", function () {
+  arrow.addEventListener("click", arrowClicked);
+  function arrowClicked() {
     arrow.classList.toggle("tbClose");
     main.classList.toggle("tbClose");
-  });
+  }
 
   if (!openDefault) {
     arrow.classList.add("tbClose");

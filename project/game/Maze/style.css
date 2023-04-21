@@ -35,8 +35,6 @@ button {
 }
 
 label {
-  margin-top: 20px;
-  margin-bottom: 10px;
   padding: 0.4rem 0.4rem 0.4rem 0rem;
 }
 
@@ -45,8 +43,6 @@ input[type="number"] {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
   background: none;
-  margin-top: 20px;
-  margin-bottom: 10px;
   padding: 0.4rem 0.4rem 0.4rem 0rem;
   border: none;
   border-bottom: 1px solid black;
@@ -94,6 +90,14 @@ dialog::backdrop {
   background-color: #808080aa;
 }
 
+.settingsSegment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 .container {
   margin: 20px;
   position: relative;
@@ -131,7 +135,7 @@ dialog::backdrop {
   margin-top: 20px;
   margin-bottom: 10px;
 
-  border-radius: 15px;
+  border-radius: 25px;
   border: #808080 dashed 4px;
 
   background-color: #e4e4e4;

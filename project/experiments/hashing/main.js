@@ -14,8 +14,15 @@ if (window.Worker && window.TextEncoder) {
       salt: Password Salt
     }
   */
+
   const Hashing = new Worker("./hashWorker.js");
   let users = loadUsers(); // Sign in: Username
+
+  // I created this with anonymous functions on the button event listeners for 2 reasons
+  // #1: It was simpler and easier, so that's just what I defaulted to, especially since this was the first project in this portfolio
+  // #2: Considering the large quantity of different buttons and the many things they have to do, it would be far too annoying to add individual named functions for each event listener
+  // However, on future projects, I will try to add a central click handler, linking to individual functions for each task
+
   // Go to account creation
   pages.signInBox1.root
     .querySelector("#createAcc")
@@ -127,7 +134,7 @@ if (window.Worker && window.TextEncoder) {
   pages.signUpBox2.root
     .querySelector("#showPswrd")
     .addEventListener("input", (e) => {
-      let value = e.srcElement.checked;
+      let value = e.target.checked;
       if (value) {
         pages.signUpBox2.input.type = "text";
       } else {
