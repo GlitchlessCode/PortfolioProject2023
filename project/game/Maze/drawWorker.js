@@ -49,6 +49,7 @@ function dimensions(data) {
 
 function create(data) {
   ctx.clearRect(0, 0, cnv.width, cnv.height);
+  frameQueue.length = 0;
   mazeSize = { w: data.dim.w, h: data.dim.h };
 
   canvasAspectRatio = cnv.width / cnv.height;
@@ -129,8 +130,15 @@ function drawCell(cell) {
 
 function draw() {
   if (frameQueue.length) {
-    let curr = frameQueue.shift();
-    curr.forEach(drawCell);
+    if (multiplier > 0) {
+      let curr = frameQueue.shift();
+      curr.forEach(drawCell);
+    } else {
+      frameQueue.length = 0;
+      ctx.fillStyle = "red";
+      ctx.font = "normal 24px serif";
+      ctx.fillText("Error: Maze too large", 20, 44);
+    }
   }
   requestAnimationFrame(draw);
 }

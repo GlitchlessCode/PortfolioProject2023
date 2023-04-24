@@ -4,7 +4,7 @@
 import { gridSquare, grid } from "/modules/grid.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
 import { randomInt, randomFloat } from "/modules/random-lib.js";
-import { swap } from "/modules/array-functions.js";
+import { swap, clamp } from "/modules/util-functions.js";
 
 createToolbar(false);
 
@@ -23,6 +23,8 @@ let fullscreenBtn = document.getElementById("fullscreen");
 let loadBtn = document.getElementById("load");
 let saveBtn = document.getElementById("save");
 
+let fileIn = document.getElementById("dropZone");
+let dialogBox = document.querySelector("dialog");
 let modalCancelBtn = document.getElementById("modalCancel");
 
 // Variables
@@ -61,13 +63,22 @@ function buttonClickHandler(event) {
     case "fullscreen":
       enterFullscreen();
       break;
+    case "load":
+      dialogBox.showModal();
+      break;
+    case "save":
+      exportMaze();
+      break;
+    case "modalCancel":
+      closeLoadWindow();
+      break;
   }
 }
 
 async function generateMaze() {
-  let width = parseInt(widthIn.value);
-  let height = parseInt(heightIn.value);
-  let chance = parseFloat(chanceIn.value);
+  let width = parseInt(clamp(widthIn.value, 1, 1024));
+  let height = parseInt(clamp(heightIn.value, 1, 1024));
+  let chance = parseFloat(clamp(chanceIn.value, 0.05, 1));
 
   await cnv.requestFullscreen();
 
@@ -80,6 +91,40 @@ async function enterFullscreen() {
   if (mainMaze) {
     mainMaze.displayFull();
   }
+}
+
+function exportMaze() {
+  let dim = mainMaze.dimensions;
+  console.log(dim);
+  let result = (((dim.w - 1) << 10) | (dim.h - 1)).toString(16).padStart(4, 0);
+  console.log(result);
+
+  let combined = "";
+  let twos = 0;
+  mainMaze.flattenedArray.forEach(function (element) {
+    let value = (element.walls.left << 1) | element.walls.top;
+
+    console.log(element.walls, value, twos);
+    if (twos > 0) {
+      twos + value;
+      combined += twos.toString(16);
+      twos = 0;
+    } else {
+      twos = value << 2;
+    }
+    console.log(combined);
+  });
+  console.log(combined);
+}
+
+function closeLoadWindow() {
+  dialogBox.addEventListener("animationend", dialogClosed, { once: true });
+  dialogBox.id = "closing";
+}
+
+function dialogClosed() {
+  dialogBox.close();
+  dialogBox.id = "";
 }
 
 function keyHandler(event) {}
@@ -260,8 +305,6 @@ class maze extends grid {
 mainMaze = new maze(1, 1, mazeSquare);
 
 // -- Testing [TEMPORARY] --
-
-// let dropZone = document.getElementById("drop_zone");
 
 // dropZone.addEventListener("drop", dropHandler);
 // dropZone.addEventListener("dragover", dragOverHandler);
