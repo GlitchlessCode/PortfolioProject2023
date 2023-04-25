@@ -101,21 +101,52 @@ function exportMaze() {
 
   let combined = "";
   let twos = 0;
-  mainMaze.flattenedArray.forEach(function (element) {
+  mainMaze.flattenedArray.forEach(function (element, index) {
     let value = (element.walls.left << 1) | element.walls.top;
 
-    console.log(element.walls, value, twos);
-    if (twos > 0) {
-      twos + value;
+    if (index % 2 === 1) {
+      twos += value;
       combined += twos.toString(16);
       twos = 0;
     } else {
       twos = value << 2;
     }
-    console.log(combined);
   });
-  console.log(combined);
+  if (mainMaze.flattenedArray.length % 2 === 1) {
+    const element = mainMaze.flattenedArray[mainMaze.flattenedArray.length - 1];
+    console.log(element);
+    let value = (element.walls.left << 1) | element.walls.top;
+    combined += (value << 2).toString(16);
+  }
+
+  result += combined;
+  console.log(result);
+
+  saveAsTxt();
 }
+
+// Load Maze
+/*
+example functions
+function extract(string) {
+    let w = (parseInt(string, 36)>>10)+1;
+    let h = (parseInt(string, 36)%1024)+1;
+    return {w, h}
+}
+function extract(string) {
+    let l = (parseInt(string, 16)>>2);
+    let r = (parseInt(string, 16)%4);
+    return {l, r}
+}
+function fullExtract(val){
+    let res = new Array();
+    for (let char of val) {
+        let ex = extract(char);
+        res.push({left:(ex.l>>1),top:(ex.l%2)},{left:(ex.r>>1),top:(ex.r%2)});
+    }
+    return res;
+}
+*/
 
 function closeLoadWindow() {
   dialogBox.addEventListener("animationend", dialogClosed, { once: true });
@@ -148,6 +179,50 @@ function screenSizeChange() {
     dim: { width, height },
   });
 }
+
+async function saveAsTxt(data, name) {
+  if (window.showSaveFilePicker) {
+    const options = {
+      suggestedName: name,
+      types: [
+        {
+          description: "Text file",
+          accept: {
+            "text/plain": [".txt"],
+          },
+        },
+      ],
+    };
+  } else {
+    const link = document.createElement("a");
+    const file = new Blob([data], { type: "text/plain" });
+    link.href = URL.createObjectURL(file);
+    // link.download = name + ".txt";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+}
+
+/*async function test() {
+    const options = {
+   types: [
+     {
+       description: "Test files",
+       accept: {
+         "text/plain": [".txt"],
+       },
+     },
+   ],
+ };
+ 
+ const handle = await window.showSaveFilePicker(options);
+ const writable = await handle.createWritable();
+ 
+ await writable.write("Hello World");
+ await writable.close();
+ 
+ return handle;
+}*/
 
 function sendFrame(deltas) {
   Drawing.postMessage({
