@@ -51,6 +51,9 @@ saveBtn.addEventListener("click", buttonClickHandler);
 
 modalCancelBtn.addEventListener("click", buttonClickHandler);
 
+dropZone.addEventListener("drop", dropHandler);
+dropZone.addEventListener("dragover", dragOverHandler);
+
 // -- Functions --
 
 function buttonClickHandler(event) {
@@ -95,9 +98,7 @@ async function enterFullscreen() {
 
 function exportMaze() {
   let dim = mainMaze.dimensions;
-  console.log(dim);
-  let result = (((dim.w - 1) << 10) | (dim.h - 1)).toString(16).padStart(4, 0);
-  console.log(result);
+  let result = (((dim.w - 1) << 10) | (dim.h - 1)).toString(36).padStart(4, 0);
 
   let combined = "";
   let twos = 0;
@@ -114,39 +115,73 @@ function exportMaze() {
   });
   if (mainMaze.flattenedArray.length % 2 === 1) {
     const element = mainMaze.flattenedArray[mainMaze.flattenedArray.length - 1];
-    console.log(element);
     let value = (element.walls.left << 1) | element.walls.top;
     combined += (value << 2).toString(16);
   }
 
   result += combined;
-  console.log(result);
 
-  saveAsTxt();
+  saveAsTxt(result, "mazeData");
 }
 
-// Load Maze
-/*
-example functions
-function extract(string) {
-    let w = (parseInt(string, 36)>>10)+1;
-    let h = (parseInt(string, 36)%1024)+1;
-    return {w, h}
-}
-function extract(string) {
-    let l = (parseInt(string, 16)>>2);
-    let r = (parseInt(string, 16)%4);
-    return {l, r}
-}
-function fullExtract(val){
-    let res = new Array();
-    for (let char of val) {
-        let ex = extract(char);
-        res.push({left:(ex.l>>1),top:(ex.l%2)},{left:(ex.r>>1),top:(ex.r%2)});
+async function dropHandler(ev) {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file
+    let item = ev.dataTransfer.items[0];
+    if (item.kind === "file") {
+      const file = item.getAsFile();
+      loadMaze(await file.text());
     }
-    return res;
+  } else {
+    alert("Could not access the file");
+  }
 }
-*/
+
+function dragOverHandler(ev) {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+}
+
+function loadMaze(fileData) {
+  let dimData = fileData.slice(0, 4);
+  let cellData = fileData.slice(4, fileData.length);
+
+  let dim = extractDimensions(dimData);
+  let cells = fullExtract(cellData);
+
+  let length = dim.w * dim.h;
+  cells.length = length;
+  console.log(dim, cells);
+}
+
+// Maze Loading Helpers
+function extractDimensions(string) {
+  let w = (parseInt(string, 36) >> 10) + 1;
+  let h = (parseInt(string, 36) % 1024) + 1;
+  return { w, h };
+}
+
+function fullExtract(string) {
+  let res = new Array();
+  for (let char of string) {
+    let ex = extractCell(char);
+    res.push(
+      { left: ex.l >> 1, top: ex.l % 2 },
+      { left: ex.r >> 1, top: ex.r % 2 }
+    );
+  }
+  return res;
+}
+function extractCell(string) {
+  let l = parseInt(string, 16) >> 2;
+  let r = parseInt(string, 16) % 4;
+  return { l, r };
+}
+
+// ----
 
 function closeLoadWindow() {
   dialogBox.addEventListener("animationend", dialogClosed, { once: true });
@@ -193,36 +228,23 @@ async function saveAsTxt(data, name) {
         },
       ],
     };
+
+    const handle = await window.showSaveFilePicker(options);
+    const writable = await handle.createWritable();
+
+    await writable.write(data);
+    await writable.close();
   } else {
     const link = document.createElement("a");
     const file = new Blob([data], { type: "text/plain" });
+
     link.href = URL.createObjectURL(file);
-    // link.download = name + ".txt";
+    link.download = name + ".txt";
     link.click();
+
     URL.revokeObjectURL(link.href);
   }
 }
-
-/*async function test() {
-    const options = {
-   types: [
-     {
-       description: "Test files",
-       accept: {
-         "text/plain": [".txt"],
-       },
-     },
-   ],
- };
- 
- const handle = await window.showSaveFilePicker(options);
- const writable = await handle.createWritable();
- 
- await writable.write("Hello World");
- await writable.close();
- 
- return handle;
-}*/
 
 function sendFrame(deltas) {
   Drawing.postMessage({
@@ -378,39 +400,3 @@ class maze extends grid {
 
 // Create maze
 mainMaze = new maze(1, 1, mazeSquare);
-
-// -- Testing [TEMPORARY] --
-
-// dropZone.addEventListener("drop", dropHandler);
-// dropZone.addEventListener("dragover", dragOverHandler);
-
-// function dropHandler(ev) {
-//   console.log("File(s) dropped");
-
-//   // Prevent default behavior (Prevent file from being opened)
-//   ev.preventDefault();
-
-//   if (ev.dataTransfer.items) {
-//     // Use DataTransferItemList interface to access the file(s)
-//     [...ev.dataTransfer.items].forEach(async (item, i) => {
-//       // If dropped items aren't files, reject them
-//       if (item.kind === "file") {
-//         const file = item.getAsFile();
-//         console.log(await file.text());
-//         console.log(`… file[${i}].name = ${file.name}`);
-//       }
-//     });
-//   } else {
-//     // Use DataTransfer interface to access the file(s)
-//     [...ev.dataTransfer.files].forEach((file, i) => {
-//       console.log(`… file[${i}].name = ${file.name}`);
-//     });
-//   }
-// }
-
-// function dragOverHandler(ev) {
-//   console.log("File(s) in drop zone");
-
-//   // Prevent default behavior (Prevent file from being opened)
-//   ev.preventDefault();
-// }
