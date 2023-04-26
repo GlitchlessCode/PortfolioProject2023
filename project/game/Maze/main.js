@@ -153,8 +153,14 @@ function loadMaze(fileData) {
   let cells = fullExtract(cellData);
 
   let length = dim.w * dim.h;
-  cells.length = length;
-  console.log(dim, cells);
+
+  mainMaze.create(dim.w, dim.h, mazeSquare);
+
+  console.log(mainMaze.flattenedArray, cells);
+  mainMaze.flattenedArray.forEach(function (cell, index) {
+    cell.walls.top = cells[index].top;
+    cell.walls.left = cells[index].left;
+  });
 }
 
 // Maze Loading Helpers
