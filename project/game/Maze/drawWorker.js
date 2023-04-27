@@ -33,6 +33,8 @@ function receiveMessage(msg) {
     case "frame":
       frameQueue.push(data.deltas);
       break;
+    case "char":
+      break;
   }
 }
 
@@ -68,6 +70,7 @@ function create(data) {
     cnv.height / 2 - ((mazeSize.h * 5 + 5) * multiplier) / 2
   );
 
+  ctx.fillStyle = "black";
   ctx.fillRect(
     (mazeSize.w * 5 + 2) * multiplier + leftMargin,
     2 * multiplier + topMargin,
@@ -128,16 +131,20 @@ function drawCell(cell) {
   }
 }
 
+function drawError() {
+  frameQueue.length = 0;
+  ctx.fillStyle = "red";
+  ctx.font = "normal 24px serif";
+  ctx.fillText("Error: Maze too large", 20, 44);
+}
+
 function draw() {
   if (frameQueue.length) {
     if (multiplier > 0) {
       let curr = frameQueue.shift();
       curr.forEach(drawCell);
     } else {
-      frameQueue.length = 0;
-      ctx.fillStyle = "red";
-      ctx.font = "normal 24px serif";
-      ctx.fillText("Error: Maze too large", 20, 44);
+      drawError();
     }
   }
   requestAnimationFrame(draw);

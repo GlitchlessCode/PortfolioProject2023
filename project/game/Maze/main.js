@@ -133,7 +133,11 @@ async function dropHandler(ev) {
     let item = ev.dataTransfer.items[0];
     if (item.kind === "file") {
       const file = item.getAsFile();
-      loadMaze(await file.text());
+      try {
+        loadMaze(await file.text());
+      } catch (error) {
+        alert("File is invalid");
+      }
     }
   } else {
     alert("Could not access the file");
@@ -152,15 +156,30 @@ function loadMaze(fileData) {
   let dim = extractDimensions(dimData);
   let cells = fullExtract(cellData);
 
-  let length = dim.w * dim.h;
+  let validateDim =
+    (dim.w <= 1024) * (dim.w >= 1) * (dim.h <= 1024) * (dim.h >= 1);
+
+  if (!validateDim) throw new Error();
 
   mainMaze.create(dim.w, dim.h, mazeSquare);
 
-  console.log(mainMaze.flattenedArray, cells);
   mainMaze.flattenedArray.forEach(function (cell, index) {
+    let validateWalls = cell.hasOwnProperty("walls");
+    let validateCell = 0;
+    if (validateWalls)
+      validateCell =
+        cell.walls.hasOwnProperty("top") * cell.walls.hasOwnProperty("left");
+
+    if (!validateCell) throw new Error();
+
     cell.walls.top = cells[index].top;
     cell.walls.left = cells[index].left;
   });
+
+  widthIn.value = dim.w;
+  heightIn.value = dim.h;
+
+  closeLoadWindow();
 }
 
 // Maze Loading Helpers
@@ -199,7 +218,21 @@ function dialogClosed() {
   dialogBox.id = "";
 }
 
-function keyHandler(event) {}
+function keyHandler(event) {
+  if (document.fullscreenElement === cnv) {
+    let key = event.key;
+    switch (key) {
+      case "w":
+        break;
+      case "a":
+        break;
+      case "s":
+        break;
+      case "d":
+        break;
+    }
+  }
+}
 
 function fullscreenChange() {
   if (document.fullscreenElement === cnv) {
