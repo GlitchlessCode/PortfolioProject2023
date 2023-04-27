@@ -51,8 +51,8 @@ saveBtn.addEventListener("click", buttonClickHandler);
 
 modalCancelBtn.addEventListener("click", buttonClickHandler);
 
-dropZone.addEventListener("drop", dropHandler);
-dropZone.addEventListener("dragover", dragOverHandler);
+fileIn.addEventListener("drop", dropHandler);
+fileIn.addEventListener("dragover", dragOverHandler);
 
 // -- Functions --
 
@@ -219,6 +219,7 @@ function screenSizeChange() {
     type: "dim",
     dim: { width, height },
   });
+  mainMaze.displayFull();
 }
 
 async function saveAsTxt(data, name) {
