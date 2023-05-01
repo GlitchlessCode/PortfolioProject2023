@@ -5,7 +5,10 @@ let ctx;
 
 let mazeSize;
 
-let frameQueue = new Array();
+let drawQueue = new Array();
+let charQueue = new Array();
+
+let charPos = { x: 0, y: 0, old: { x: 0, y: 0 } };
 
 let mazeAspectRatio = 1;
 let canvasAspectRatio = 1;
@@ -31,9 +34,10 @@ function receiveMessage(msg) {
       create(data);
       break;
     case "frame":
-      frameQueue.push(data.deltas);
+      drawQueue.push(data.deltas);
       break;
     case "char":
+      char(data);
       break;
   }
 }
@@ -51,7 +55,7 @@ function dimensions(data) {
 
 function create(data) {
   ctx.clearRect(0, 0, cnv.width, cnv.height);
-  frameQueue.length = 0;
+  drawQueue.length = 0;
   mazeSize = { w: data.dim.w, h: data.dim.h };
 
   canvasAspectRatio = cnv.width / cnv.height;
@@ -84,7 +88,19 @@ function create(data) {
     1 * multiplier
   );
 
-  frameQueue.push(data.arr);
+  drawQueue.push(data.arr);
+}
+
+function char(data) {
+  if (data.pos.old) {
+    charPos.old = data.pos.old;
+  } else {
+    charPos.old.x = charPos.x;
+    charPos.old.y = charPos.y;
+  }
+  charPos.x = data.pos.x;
+  charPos.y = data.pos.y;
+  charQueue.push(interpolate(structuredClone(charPos)));
 }
 
 function drawCell(cell) {
@@ -132,19 +148,37 @@ function drawCell(cell) {
 }
 
 function drawError() {
-  frameQueue.length = 0;
+  drawQueue.length = 0;
   ctx.fillStyle = "red";
   ctx.font = "normal 24px serif";
   ctx.fillText("Error: Maze too large", 20, 44);
 }
 
+function drawCharacter() {}
+
+function* interpolate(posData) {
+  for (let i = 0; i < 1; i += 0.1) {
+    let x = Math.round((posData.x * i + posData.old.x * (1 - i)) * 10) / 10;
+    let y = Math.round((posData.y * i + posData.old.y * (1 - i)) * 10) / 10;
+    yield { x, y, fill: [{ x: posData.x, y: posData.y }, posData.old] };
+  }
+}
+
 function draw() {
-  if (frameQueue.length) {
+  if (drawQueue.length) {
     if (multiplier > 0) {
-      let curr = frameQueue.shift();
+      let curr = drawQueue.shift();
       curr.forEach(drawCell);
     } else {
       drawError();
+    }
+  }
+  if (charQueue.length) {
+    let curr = charQueue[0].next();
+    console.log(curr.value);
+    if (curr.done) {
+      charQueue.shift();
+    } else {
     }
   }
   requestAnimationFrame(draw);

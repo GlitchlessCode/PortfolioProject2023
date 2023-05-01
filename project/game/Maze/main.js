@@ -29,6 +29,7 @@ let modalCancelBtn = document.getElementById("modalCancel");
 
 // Variables
 let mainMaze;
+let mazeCharacter;
 
 // -- Canvas Worker Setup --
 cnv.width = screen.width;
@@ -86,7 +87,7 @@ async function generateMaze() {
   await cnv.requestFullscreen();
 
   mainMaze.create(width, height, mazeSquare);
-  mainMaze.ellers(chance);
+  mainMaze.ellers(chance, mazeCharacter);
 }
 
 async function enterFullscreen() {
@@ -221,16 +222,23 @@ function dialogClosed() {
 function keyHandler(event) {
   if (document.fullscreenElement === cnv) {
     let key = event.key;
+    let send = false;
     switch (key) {
       case "w":
+        send = mazeCharacter.move(0, -1);
         break;
       case "a":
+        send = mazeCharacter.move(-1, 0);
         break;
       case "s":
+        send = mazeCharacter.move(0, 1);
         break;
       case "d":
+        send = mazeCharacter.move(1, 0);
         break;
     }
+    if (!send) return;
+    sendChar(mazeCharacter);
   }
 }
 
@@ -293,7 +301,49 @@ function sendFrame(deltas) {
   });
 }
 
+function sendChar(character) {
+  Drawing.postMessage({
+    type: "char",
+    pos: character.position,
+  });
+}
+
 // -- Classes --
+class character {
+  position = { x: 0, y: 0 };
+  target = { x: 0, y: 0 };
+  mazeData;
+  constructor(mazeIn) {
+    this.initialize(mazeIn);
+  }
+  initialize(mazeIn) {
+    this.position = { x: 0, y: mazeIn.dimensions.h - 1 };
+    this.target = { x: mazeIn.dimensions.w - 1, y: 0 };
+    this.mazeData = mazeIn;
+    Drawing.postMessage({
+      type: "char",
+      pos: { x: this.position.x, y: this.position.y, old: this.position },
+    });
+  }
+  move(xDir, yDir) {
+    let xCoord = Math.max(this.position.x, this.position.x + xDir);
+    let yCoord = Math.max(this.position.y, this.position.y + yDir);
+    try {
+      let walledCell = this.mazeData.getPos(xCoord, yCoord);
+      if (xDir) {
+        if (walledCell.walls.left) throw new Error();
+      }
+      if (yDir) {
+        if (walledCell.walls.top) throw new Error();
+      }
+      this.position.x = this.position.x + xDir;
+      this.position.y = this.position.y + yDir;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
 
 class mazeSquare extends gridSquare {
   walls = { left: 1, top: 1 };
@@ -313,7 +363,7 @@ class maze extends grid {
     });
   }
 
-  ellers(chance) {
+  ellers(chance, player) {
     if (!Number.isFinite(chance)) throw new TypeError("chance is not a Number");
     if (chance <= 0 || chance > 1) throw new RangeError("chance out of range");
 
@@ -334,6 +384,8 @@ class maze extends grid {
     }
 
     this.finalizeMaze(this.dimensions.h - 1);
+
+    player.initialize(this);
   }
 
   finalizeMaze(row) {
@@ -438,5 +490,8 @@ class maze extends grid {
   }
 }
 
-// Create maze
+// Create maze & character
 mainMaze = new maze(1, 1, mazeSquare);
+mazeCharacter = new character(mainMaze);
+
+window.test = mazeCharacter;
