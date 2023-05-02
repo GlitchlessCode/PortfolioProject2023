@@ -18,6 +18,9 @@ let multiplier = 0;
 let leftMargin = 0;
 let topMargin = 0;
 
+let won = false;
+let winAnim = 0;
+
 addEventListener("message", receiveMessage);
 
 function receiveMessage(msg) {
@@ -39,6 +42,10 @@ function receiveMessage(msg) {
     case "char":
       char(data);
       break;
+    case "victory":
+      won = true;
+      winAnim = 0;
+      break;
   }
 }
 
@@ -54,6 +61,7 @@ function dimensions(data) {
 }
 
 function create(data) {
+  won = false;
   ctx.clearRect(0, 0, cnv.width, cnv.height);
   drawQueue.length = 0;
   mazeSize = { w: data.dim.w, h: data.dim.h };
@@ -154,14 +162,65 @@ function drawError() {
   ctx.fillText("Error: Maze too large", 20, 44);
 }
 
-function drawCharacter() {}
+function drawCharacter(posData) {
+  ctx.clearRect(
+    (posData.prev.x * 5 + 3) * multiplier + leftMargin,
+    (posData.prev.y * 5 + 3) * multiplier + topMargin,
+    4 * multiplier,
+    4 * multiplier
+  );
+  ctx.fillStyle = "#aaffaa";
+  ctx.fillRect(
+    ((mazeSize.w - 1) * 5 + 3) * multiplier + leftMargin,
+    3 * multiplier + topMargin,
+    4 * multiplier,
+    4 * multiplier
+  );
+  ctx.fillStyle = "orange";
+  ctx.fillRect(
+    (posData.x * 5 + 3.5) * multiplier + leftMargin,
+    (posData.y * 5 + 3.5) * multiplier + topMargin,
+    3 * multiplier,
+    3 * multiplier
+  );
+}
 
 function* interpolate(posData) {
-  for (let i = 0; i < 1; i += 0.1) {
+  let prevX = posData.old.x;
+  let prevY = posData.old.y;
+  for (let i = 0.1; i < 0.9; i += 0.1) {
     let x = Math.round((posData.x * i + posData.old.x * (1 - i)) * 10) / 10;
     let y = Math.round((posData.y * i + posData.old.y * (1 - i)) * 10) / 10;
-    yield { x, y, fill: [{ x: posData.x, y: posData.y }, posData.old] };
+    yield { x, y, prev: { x: prevX, y: prevY } };
+    prevX = x;
+    prevY = y;
   }
+  return {
+    x: posData.x,
+    y: posData.y,
+    prev: { x: prevX, y: prevY },
+  };
+}
+
+function drawWin() {
+  if (winAnim < 0.5) winAnim += 0.01;
+
+  ctx.save();
+
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, cnv.height * Math.sin(Math.PI * winAnim) * 2);
+  ctx.lineTo(cnv.width * Math.sin(Math.PI * winAnim) * 2, 0);
+  ctx.clip();
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, cnv.width, cnv.height);
+
+  ctx.font = "normal 24px serif";
+  ctx.fillStyle = "#eeeeee";
+  ctx.fillText("Well Done!", 0, 0);
+
+  ctx.restore();
 }
 
 function draw() {
@@ -174,12 +233,14 @@ function draw() {
     }
   }
   if (charQueue.length) {
-    let curr = charQueue[0].next();
-    console.log(curr.value);
-    if (curr.done) {
-      charQueue.shift();
-    } else {
+    if (multiplier > 0) {
+      let curr = charQueue[0].next();
+      drawCharacter(curr.value);
+      if (curr.done) charQueue.shift();
     }
+  }
+  if (won) {
+    drawWin();
   }
   requestAnimationFrame(draw);
 }

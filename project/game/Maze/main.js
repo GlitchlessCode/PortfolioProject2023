@@ -91,6 +91,7 @@ async function generateMaze() {
 }
 
 async function enterFullscreen() {
+  mazeCharacter.canMove = false;
   await cnv.requestFullscreen();
   if (mainMaze) {
     mainMaze.displayFull();
@@ -224,15 +225,19 @@ function keyHandler(event) {
     let key = event.key;
     let send = false;
     switch (key) {
+      case "ArrowUp":
       case "w":
         send = mazeCharacter.move(0, -1);
         break;
+      case "ArrowLeft":
       case "a":
         send = mazeCharacter.move(-1, 0);
         break;
+      case "ArrowDown":
       case "s":
         send = mazeCharacter.move(0, 1);
         break;
+      case "ArrowRight":
       case "d":
         send = mazeCharacter.move(1, 0);
         break;
@@ -313,19 +318,19 @@ class character {
   position = { x: 0, y: 0 };
   target = { x: 0, y: 0 };
   mazeData;
-  constructor(mazeIn) {
-    this.initialize(mazeIn);
-  }
+  canMove = false;
   initialize(mazeIn) {
     this.position = { x: 0, y: mazeIn.dimensions.h - 1 };
     this.target = { x: mazeIn.dimensions.w - 1, y: 0 };
     this.mazeData = mazeIn;
+    this.canMove = true;
     Drawing.postMessage({
       type: "char",
       pos: { x: this.position.x, y: this.position.y, old: this.position },
     });
   }
   move(xDir, yDir) {
+    if (!this.canMove) return false;
     let xCoord = Math.max(this.position.x, this.position.x + xDir);
     let yCoord = Math.max(this.position.y, this.position.y + yDir);
     try {
@@ -338,10 +343,20 @@ class character {
       }
       this.position.x = this.position.x + xDir;
       this.position.y = this.position.y + yDir;
+
+      if (this.position.x == this.target.x && this.position.y == this.target.y)
+        this.win();
+
       return true;
     } catch {
       return false;
     }
+  }
+  win() {
+    this.canMove = false;
+    Drawing.postMessage({
+      type: "victory",
+    });
   }
 }
 
@@ -374,6 +389,7 @@ class maze extends grid {
 
     this.setCount = 1;
     this.clearSets();
+    player.canMove = false;
 
     this.displayFull();
 
