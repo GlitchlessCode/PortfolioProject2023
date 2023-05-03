@@ -88,7 +88,9 @@ h3 {
 
 #mainContainer {
   position: absolute;
-  width: 100vw;
+  left: 0;
+  right: 0;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
   align-items: center;

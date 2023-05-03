@@ -140,7 +140,8 @@ dialog#closing::backdrop {
 
 #mainContainer {
   position: absolute;
-  width: 100vw;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
