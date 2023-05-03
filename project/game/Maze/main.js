@@ -91,7 +91,7 @@ async function generateMaze() {
 }
 
 async function enterFullscreen() {
-  mazeCharacter.canMove = false;
+  mazeCharacter.initialize(mainMaze);
   await cnv.requestFullscreen();
   if (mainMaze) {
     mainMaze.displayFull();

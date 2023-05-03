@@ -213,14 +213,42 @@ function drawWin() {
   ctx.lineTo(cnv.width * Math.sin(Math.PI * winAnim) * 2, 0);
   ctx.clip();
 
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "#224488";
   ctx.fillRect(0, 0, cnv.width, cnv.height);
 
-  ctx.font = "normal 24px serif";
+  let textSize = Math.floor(cnv.height / 10);
+  ctx.font = `bold ${textSize}px sans-serif`;
   ctx.fillStyle = "#eeeeee";
-  ctx.fillText("Well Done!", 0, 0);
+  ctx.textBaseline = "hanging";
+  let textDim = {
+    w: measureWidth("Well Done!", textSize),
+    h: measureHeight("Well Done!", textSize),
+  };
+  ctx.fillText(
+    "Well Done!",
+    cnv.width / 2 - textDim.w / 2,
+    cnv.height / 2 - textDim.h / 2
+  );
 
   ctx.restore();
+}
+
+function measureWidth(text, size) {
+  // Set canvas font size
+  ctx.font = `bold ${size}px sans-serif`;
+  // Return the measured width of the provided text
+  return ctx.measureText(text).width;
+}
+
+function measureHeight(text, size) {
+  // Set canvas font size
+  ctx.font = `bold ${size}px sans-serif`;
+  // Get the text metrics for the provided text
+  let textMetric = ctx.measureText(text);
+  // Return the ascent plus the descent
+  return (
+    textMetric.actualBoundingBoxAscent + textMetric.actualBoundingBoxDescent
+  );
 }
 
 function draw() {
