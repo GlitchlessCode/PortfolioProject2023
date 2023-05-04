@@ -1,6 +1,6 @@
 // Import
 import { swap } from "/modules/util-functions.js";
-import { yieldingHeapSort } from "/modules/sorters.js";
+import { callbackBinaryQuickSort, callbackHeapSort } from "/modules/sorters.js";
 import { createToolbar } from "/modules/toolbar-overlay.js";
 import { randomInt, randomHex } from "../../../modules/random-lib.js";
 
@@ -11,36 +11,38 @@ let time = (ms) =>
     setTimeout(r, ms);
   });
 
-async function test(size) {
+async function testCB(size) {
   let example = Array.from({ length: size }, (_, i) => i);
   example.forEach((element, index) =>
     swap(example, index, randomInt(0, example.length))
   );
   console.log(example);
   let example2 = structuredClone(example);
-  let sorting = yieldingHeapSort(example2);
-  let curr = { done: false };
-  while (curr.done === false) {
-    curr = sorting.next();
-    display(curr.value);
-    await time(1);
-  }
+  await callbackBinaryQuickSort(example2, display);
   return example2;
 }
 
-function display(params) {
+async function display(params) {
   if (params) {
     let el = document.getElementById("test");
-    let heightPer = 300 / Math.max(...params);
+    let max = Math.max(...params);
+    let heightPer = 300 / max;
     el.innerHTML = "";
     params.forEach((element) => {
+      let b = Math.floor((element / max) * 200 + 27)
+        .toString(16)
+        .padStart(2, 0);
+      let g = Math.floor(255 - ((element / max) * 200 + 27))
+        .toString(16)
+        .padStart(2, 0);
       let newEl = document.createElement("div");
-      newEl.style = `display:inline-block; background: ${randomHex()}; width:2px; height:${
+      newEl.style = `display:inline-block; background: #00${g}${b}; width:2px; height:${
         heightPer * element
       }px`;
       el.append(newEl);
     });
+    await time(3);
   }
 }
 
-window.test = test;
+window.test = testCB;

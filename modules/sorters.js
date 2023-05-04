@@ -128,14 +128,15 @@ function mergeSort(array) {
   return [...result, ...leftArray, ...rightArray];
 }
 
-function* yieldingBinaryQuickSort(array) {
+async function callbackBinaryQuickSort(array, callbackFunction) {
   for (let i = array.length / 2 - 1; i >= 0; i--) {
     heapify(array, array.length, i);
   }
+  await callbackFunction(array);
 
   let power = Math.floor(Math.log2(array[0]));
 
-  function recursiveBinarySort(arr, pow, a, b) {
+  async function recursiveBinarySort(arr, pow, a, b, callbackFunction) {
     let l = a;
     let r = b;
 
@@ -159,23 +160,31 @@ function* yieldingBinaryQuickSort(array) {
         l++;
         r--;
       }
+      await callbackFunction(array);
     }
-    if (b - l >= 1 && pow > -50) {
-      recursiveBinarySort(arr, pow - 1, l, b);
+
+    if (b - l >= 1 && pow > 0) {
+      await recursiveBinarySort(arr, pow - 1, l, b, callbackFunction);
     }
-    if (r - a >= 1 && pow > -50) {
-      recursiveBinarySort(arr, pow - 1, a, r);
+    if (r - a >= 1 && pow > 0) {
+      await recursiveBinarySort(arr, pow - 1, a, r, callbackFunction);
     }
   }
-  recursiveBinarySort(array, power, 0, array.length - 1);
+  await recursiveBinarySort(
+    array,
+    power,
+    0,
+    array.length - 1,
+    callbackFunction
+  );
 }
 
-function* yieldingHeapSort(array) {
+async function callbackHeapSort(array, callbackFunction) {
   // Build max heap (every parent is larger than both children)
   for (let i = array.length / 2 - 1; i >= 0; i--) {
     heapify(array, array.length, i);
   }
-  yield array;
+  await callbackFunction(array);
   /*
     Heap Sort
     1. Swap root with last element
@@ -185,15 +194,14 @@ function* yieldingHeapSort(array) {
   for (let i = array.length - 1; i >= 0; i--) {
     // Swap first and last, placing the root at the end
     swap(array, 0, i);
-    yield array;
-
+    await callbackFunction(array);
     // Heapify to regain max heap, with i as the heap size
     heapify(array, i, 0);
-    yield array;
+    await callbackFunction(array);
   }
 }
 
-function* yieldingMergeSort(array) {
+async function callbackMergeSort(array, callbackFunction) {
   // Return if length is 0 or 1
   if (array.length < 2) return array;
 
@@ -226,7 +234,7 @@ export {
   mergeSort,
   heapSort,
   binaryQuickSort,
-  yieldingMergeSort,
-  yieldingHeapSort,
-  yieldingBinaryQuickSort,
+  callbackMergeSort,
+  callbackHeapSort,
+  callbackBinaryQuickSort,
 };
