@@ -84,6 +84,12 @@ button:disabled {
   z-index: 0;
 }
 
+#buttons {
+  display: inline;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 #mainContainer {
   position: absolute;
   left: 0;
@@ -93,4 +99,10 @@ button:disabled {
   align-items: center;
   pointer-events: none;
   z-index: 0;
+}
+
+#sortingSpace {
+  width: 80vw;
+  height: 300px;
+  overflow: hidden;
 }

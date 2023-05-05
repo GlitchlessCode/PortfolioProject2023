@@ -211,8 +211,8 @@ async function callbackMergeSort(array, callbackFunction) {
   const splitArray = array.splice(0, split);
 
   // Recursively call self
-  let leftArray = mergeSort(splitArray);
-  let rightArray = mergeSort(array);
+  let leftArray = await callbackMergeSort(splitArray, callbackFunction);
+  let rightArray = await callbackMergeSort(array, callbackFunction);
 
   let result = new Array();
 
@@ -224,6 +224,7 @@ async function callbackMergeSort(array, callbackFunction) {
     } else {
       result.push(rightArray.shift());
     }
+    await callbackFunction([...result, ...leftArray, ...rightArray]);
   }
 
   // Return sorted result + any presorted remainder

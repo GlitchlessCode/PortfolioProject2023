@@ -16,13 +16,24 @@
           <p>These are some sorting algorithms</p>
         </div>
         <div class="container">
-          <h1>Words</h1>
-          <p>Other Words</p>
-          <button>AAAAAA</button>
-          <div id="test"></div>
+          <p>Sort the chosen amount by clicking one of the buttons below</p>
+          <label for="amount">Amount:</label>
+          <input
+            id="amountIn"
+            type="number"
+            name="amount"
+            min="0"
+            max="2048"
+            value="128"
+          />
+          <div id="buttons">
+            <button id="merge">Merge</button>
+            <button id="binary">Binary Quick</button>
+            <button id="heap">Heap</button>
+          </div>
+          <div id="sortingSpace"></div>
         </div>
       </div>
     </div>
-    <canvas id="mazeCanvas" hidden></canvas>
   </body>
 </html>
