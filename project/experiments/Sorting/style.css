@@ -106,3 +106,10 @@ button:disabled {
   height: 300px;
   overflow: hidden;
 }
+
+#sortingSpace:before {
+  content: "";
+  display: inline-block;
+  vertical-align: bottom;
+  height: 100%;
+}

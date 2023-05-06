@@ -21,6 +21,7 @@ let binaryQuickSortBtn = document.getElementById("binary");
 let heapSortBtn = document.getElementById("heap");
 
 let sortingSpaceEl = document.getElementById("sortingSpace");
+
 // Variables
 let scale = 128;
 let mainArray = Array.from({ length: 128 }, (_, i) => i);
@@ -36,7 +37,7 @@ heapSortBtn.addEventListener("click", clickHandler);
 // --Functions--
 
 function amountChanged() {
-  amountInEL.value = Math.floor(clamp(amountInEL.value, 8, 2048));
+  amountInEL.value = Math.floor(clamp(parseFloat(amountInEL.value), 8, 2048));
   disableAppropriate();
 }
 
@@ -69,8 +70,8 @@ async function clickHandler(event) {
 }
 
 function disableAppropriate() {
-  amountInEL.value = Math.floor(clamp(amountInEL.value, 0, 2048));
-  scale = amountInEL.value;
+  amountInEL.value = Math.floor(clamp(parseFloat(amountInEL.value), 0, 2048));
+  scale = parseFloat(amountInEL.value);
 
   if (scale > 512) {
     mergeSortBtn.disabled = true;
@@ -84,25 +85,24 @@ function disableAppropriate() {
   }
 }
 
-async function delay(ms) {
-  new Promise((r, _) => {
+function time(ms) {
+  return new Promise((r, _) => {
     setTimeout(r, ms);
   });
 }
 
 async function runSorter(sorter) {
   mainArray = Array.from({ length: scale }, (_, i) => i);
-  mainArray.forEach((element, index) => {
-    swap(mainArray, index, randomInt(0, scale));
-    display(mainArray);
-  });
+  for (let i = 0; i < scale; i++) {
+    swap(mainArray, i, randomInt(0, scale));
+    await display(mainArray);
+  }
   await sorter(mainArray, display);
 }
 
 async function display(params) {
-  console.log(params);
   if (params) {
-    let max = Math.max(...params);
+    let max = scale;
     let heightPer = 300 / max;
     let width = 80 / scale;
 
@@ -117,13 +117,17 @@ async function display(params) {
         .toString(16)
         .padStart(2, 0)}${g
         .toString(16)
-        .padStart(2, 0)}55; width:${width}vw; height:${heightPer * element}px`;
+        .padStart(2, 0)}55; width:${width}vw; height:${
+        heightPer * element
+      }px; bottom:0`;
 
       sortingSpaceEl.append(newColumn);
     });
-    await delay(1);
+    await time(1);
   }
 }
 
 // Display default
 await display(mainArray);
+
+window.test = runSorter;
