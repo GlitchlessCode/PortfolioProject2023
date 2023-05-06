@@ -4,6 +4,7 @@ import { swap } from "/modules/util-functions.js";
 
 // With help from https://www.programiz.com/dsa/heap-sort
 function heapify(array, size, index) {
+  console.log(array, size, index);
   // Set index of root
   let largestItemIndex = index;
   // Determine indices of children
@@ -129,10 +130,10 @@ function mergeSort(array) {
 }
 
 async function callbackBinaryQuickSort(array, callbackFunction) {
-  for (let i = array.length / 2 - 1; i >= 0; i--) {
+  for (let i = Math.ceil(array.length / 2 - 1); i >= 0; i--) {
     heapify(array, array.length, i);
+    await callbackFunction(array);
   }
-  await callbackFunction(array);
 
   let power = Math.floor(Math.log2(array[0]));
 
@@ -181,10 +182,10 @@ async function callbackBinaryQuickSort(array, callbackFunction) {
 
 async function callbackHeapSort(array, callbackFunction) {
   // Build max heap (every parent is larger than both children)
-  for (let i = array.length / 2 - 1; i >= 0; i--) {
+  for (let i = Math.ceil(array.length / 2 - 1); i >= 0; i--) {
     heapify(array, array.length, i);
+    await callbackFunction(array);
   }
-  await callbackFunction(array);
   /*
     Heap Sort
     1. Swap root with last element

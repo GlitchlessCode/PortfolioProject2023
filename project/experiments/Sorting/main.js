@@ -26,6 +26,8 @@ let sortingSpaceEl = document.getElementById("sortingSpace");
 let scale = 128;
 let mainArray = Array.from({ length: 128 }, (_, i) => i);
 
+let sortRunning = false;
+
 // -- Add Event Listeners--
 amountInEL.addEventListener("input", disableAppropriate);
 amountInEL.addEventListener("change", amountChanged);
@@ -37,11 +39,13 @@ heapSortBtn.addEventListener("click", clickHandler);
 // --Functions--
 
 function amountChanged() {
+  if (sortRunning) return;
   amountInEL.value = Math.floor(clamp(parseFloat(amountInEL.value), 8, 2048));
   disableAppropriate();
 }
 
 async function clickHandler(event) {
+  if (sortRunning) return;
   disableAppropriate();
 
   const target = event.target;
@@ -50,6 +54,7 @@ async function clickHandler(event) {
   mergeSortBtn.disabled = true;
   binaryQuickSortBtn.disabled = true;
   heapSortBtn.disabled = true;
+  amountInEL.disabled = true;
 
   switch (target.id) {
     case "merge":
@@ -63,6 +68,7 @@ async function clickHandler(event) {
       break;
   }
 
+  amountInEL.disabled = false;
   mergeSortBtn.disabled = false;
   binaryQuickSortBtn.disabled = false;
   heapSortBtn.disabled = false;
@@ -70,6 +76,7 @@ async function clickHandler(event) {
 }
 
 function disableAppropriate() {
+  if (sortRunning) return;
   amountInEL.value = Math.floor(clamp(parseFloat(amountInEL.value), 0, 2048));
   scale = parseFloat(amountInEL.value);
 
@@ -92,19 +99,21 @@ function time(ms) {
 }
 
 async function runSorter(sorter) {
+  sortRunning = true;
   mainArray = Array.from({ length: scale }, (_, i) => i);
   for (let i = 0; i < scale; i++) {
     swap(mainArray, i, randomInt(0, scale));
     await display(mainArray);
   }
   await sorter(mainArray, display);
+  sortRunning = false;
 }
 
 async function display(params) {
   if (params) {
     let max = scale;
     let heightPer = 300 / max;
-    let width = 80 / scale;
+    let width = 65 / scale;
 
     sortingSpaceEl.innerHTML = "";
 
@@ -129,5 +138,3 @@ async function display(params) {
 
 // Display default
 await display(mainArray);
-
-window.test = runSorter;
