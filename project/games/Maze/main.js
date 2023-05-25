@@ -509,5 +509,3 @@ class maze extends grid {
 // Create maze & character
 mainMaze = new maze(1, 1, mazeSquare);
 mazeCharacter = new character(mainMaze);
-
-window.test = mazeCharacter;
