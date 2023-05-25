@@ -49,21 +49,21 @@ function createToolbar(openDefault) {
   homeBtn.classList.add("tbBtns");
   homeBtn.addEventListener("click", homeClicked);
   function homeClicked() {
-    location.replace("/");
+    location.assign("/");
   }
 
   projectBtn.innerHTML = "Projects";
   projectBtn.classList.add("tbBtns");
   projectBtn.addEventListener("click", projectClicked);
   function projectClicked() {
-    location.replace("/project/info/Projects/");
+    location.assign("/project/info/Projects/");
   }
 
   aboutBtn.innerHTML = "About";
   aboutBtn.classList.add("tbBtns");
   aboutBtn.addEventListener("click", aboutClicked);
   function aboutClicked() {
-    location.replace("/project/info/About/");
+    location.assign("/project/info/About/");
   }
 
   arrowContain.id = "tbArrowContain";
