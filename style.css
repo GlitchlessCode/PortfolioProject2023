@@ -43,8 +43,9 @@ p {
   display: inline-block;
 
   box-sizing: border-box;
-  border: #99aabb 3px solid;
+  border: #99aabb44 3px solid;
   border-radius: 5px;
+  background-color: #44556611;
 
   transition: color 750ms ease-in-out, border-color 250ms ease-in-out;
 
@@ -56,6 +57,7 @@ p {
 .link span {
   position: relative;
   z-index: 5;
+  font-weight: 600;
 }
 
 .link::before {

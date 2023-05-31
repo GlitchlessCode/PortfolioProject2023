@@ -1,0 +1,35 @@
+h1 {
+  margin-bottom: 0;
+  font-size: 2.4rem;
+}
+
+h2 {
+  margin-top: 0;
+  color: #444444;
+  font-weight: 500;
+  font-size: 1.7rem;
+}
+
+p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+}
+
+#mainContain {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+}
+
+#container {
+  width: 100vw;
+  padding: 0 15vw;
+  margin-top: 4rem;
+  overflow-x: auto;
+  overflow-wrap: normal;
+}
